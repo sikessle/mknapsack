@@ -25,6 +25,7 @@ $(document).ready(function () {
     });
 
     $('#solve').click(function () {
+        $('.results').insertBefore('.parser');
         $('.results .nav-tabs a[href="#genetic-log"]').tab('show');
         $('.results .panel').removeClass('panel-default').addClass('panel-success');
         genetic.solve(problems);
