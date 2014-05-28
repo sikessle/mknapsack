@@ -1,0 +1,20 @@
+{
+    "version": "1.0.0",
+    "author": "agentur kessler",
+    "bugs": {
+        "url": "https://github.com/sikessle/website-template/issues"
+    },
+    "dependencies": {
+        "grunt": "~0.4",
+        "grunt-contrib-less": "latest",
+        "grunt-contrib-watch": "latest"
+    },
+    "description": "website-template with html5, bootstrap 3",
+    "homepage": "https://github.com/sikessle/website-template",
+    "license": "MIT",
+    "name": "website-template",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/sikessle/website-template.git"
+    }
+}

@@ -1,0 +1,41 @@
+/* IMPORTS */
+/* bootstrap */
+@import '../libs/bootstrap/less/bootstrap.less';
+@import 'bootstrap-custom-variables.less';
+/* helper mixin for retina images */
+@import '../libs/retina.js/src/retina.less';
+/* css animation classes: usage: .animate(fadeInDown, .7s); */
+@import '../libs/animate-less/less/animate.less';
+@import 'mixins.less';
+/* END IMPORTS */
+
+/* GLOBALS */
+@myvar: Helvetiva;
+/* END GLOBALS */
+
+/* HEADER */
+header.primary {
+    .container();
+    .content {
+        .jumbotron();
+        h1 {
+            .animate(fadeInLeft, .7s);
+        }
+    }
+}
+/* END HEADER */
+
+/* MAIN */
+#main {
+    .container();
+    .news {
+         .make-row();
+         .content {
+             .make-sm-column(8);
+         }
+         .info {
+             .make-sm-column(4);
+         }
+    }
+}
+/* END MAIN */
