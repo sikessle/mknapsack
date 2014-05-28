@@ -6,8 +6,8 @@ $(document).ready(function () {
 
     var input, parser, problems, genetic, parserLogger, geneticLogger;
 
-    parserLogger = new Logger('#parser-log');
-    geneticLogger = new Logger('#genetic-log');
+    parserLogger = new Logger('#parser-log textarea');
+    geneticLogger = new Logger('#genetic-log textarea');
 
     parser = new ORParser(parserLogger);
     genetic = new Genetic({
@@ -25,7 +25,13 @@ $(document).ready(function () {
     });
 
     $('#solve').click(function () {
+        $('.results .nav-tabs a[href="#genetic-log"]').tab('show');
+        $('.results .panel').removeClass('panel-default').addClass('panel-success');
         genetic.solve(problems);
+    });
+
+    $('#reset').click(function () {
+        document.location.reload(true);
     });
 
 });

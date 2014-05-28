@@ -1,8 +1,8 @@
 {
-  "name": "website-template",
+  "name": "mknapsack solver",
   "version": "1.0.0",
   "authors": [
-    "agentur kessler"
+    "sikessle"
   ],
   "ignore": [
     "**/.*",
@@ -10,12 +10,10 @@
     "bower_components"
   ],
   "license": "MIT",
-  "homepage": "www.agenturkessler.com",
   "dependencies": {
     "bootstrap": "~3.1",
     "jquery": "~1.11",
     "html5shiv": "~3.7",
-    "retina.js": "~1.3",
     "components-font-awesome": "~4.0",
     "animate-less": "~2.0"
   }

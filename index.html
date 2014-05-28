@@ -3,9 +3,9 @@
 <head>
     <meta charset="utf-8">
 
-    <title>TITLE</title>
+    <title>multi dimensional knapsack problem solver</title>
 
-    <meta name="description" content="DESCIRPTION">
+    <meta name="description" content="genetic algorithm to solve the multidimensional knapsack problem.">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <link rel="shortcut icon" href="images/favicon.png">
@@ -45,6 +45,10 @@
 
                         <button type="button" class="btn btn-default navbar-btn" id="solve" disabled>
                             Solve
+                        </button>
+
+                        <button type="button" class="btn btn-default navbar-btn" id="reset">
+                            reset
                         </button>
 
                     </div>
@@ -209,6 +213,7 @@
                         </div>
 
                         <div class="tab-pane fade" id="parser-log">
+                            <textarea class="form-control" rows="10"></textarea>
                         </div>
 
                     </div>
@@ -219,7 +224,7 @@
 
         <section class="results">
 
-            <div class="panel panel-info">
+            <div class="panel panel-default">
                 <div class="panel-heading">
                     <h3 class="panel-title">Genetic Algorithm</h3>
                 </div>
@@ -231,6 +236,7 @@
 
                     <div class="tab-content">
                         <div class="tab-pane active fade in" id="genetic-log">
+                            <textarea class="form-control" rows="35"></textarea>
                         </div>
                     </div>
                 </div>
@@ -244,7 +250,7 @@
     <!-- Javascript at the end for fast page loading -->
     <script src="libs/jquery/dist/jquery.min.js"></script>
     <script src="libs/bootstrap/dist/js/bootstrap.min.js"></script>
-    <script src="libs/retina.js/dist/retina.min.js"></script>
+
     <script src="javascripts/logger.js"></script>
     <script src="javascripts/orparser.js"></script>
     <script src="javascripts/genetic.js"></script>

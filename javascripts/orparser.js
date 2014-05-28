@@ -24,10 +24,12 @@ var ORParser = (function () {
 
         numberOfProblems = tokens[0];
         this.logger.log("number of problems: " + numberOfProblems);
+        this.logger.log('------------------------');
 
         i = 1;
         p = 0;
         while (p < numberOfProblems) {
+
             // problem header: N M OptimalSolution
             numProfits = this.getToken(tokens, i);
             i += 1;
@@ -37,7 +39,7 @@ var ORParser = (function () {
             optimalSolution = this.getToken(tokens, i);
             i += 1;
 
-            this.logger.log('numbers: profits: {}, weights: {}, bagLimits: {}, optimal: {}',
+            this.logger.log('profits: {}, weights: {}, bagLimits: {}, optimal: {}',
                 numProfits, numWeights, numBagLimits, optimalSolution);
 
 
@@ -75,6 +77,7 @@ var ORParser = (function () {
 
 
             this.logger.log('problem: {}', problem);
+            this.logger.log('------------------------');
 
             this.problems.push(problem);
 
