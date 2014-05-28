@@ -14,6 +14,7 @@ var ORParser = (function () {
         this.stopwatch.start('parse');
 
         var tokens = input.match(/\S+/g);
+        this.problems = [];
         this.parseTokens(tokens);
 
         this.logger.log("Total parsing time: {} ms", this.stopwatch.stop('parse'));
@@ -42,6 +43,7 @@ var ORParser = (function () {
 
             // parse single problem block
             var problem = {
+                optimal: optimalSolution,
                 profits: [],
                 weights: [],
                 bagLimits: []
@@ -77,23 +79,16 @@ var ORParser = (function () {
             p++;
         }
 
-        this.reorderProblems();
+        this.reorderProblemsDataStructure();
         this.logProblems();
     };
 
-    ORParser.prototype.reorderProblems = function () {
+    ORParser.prototype.reorderProblemsDataStructure = function () {
         var reordedProblems = [];
-
-        var p = {
-            profits: [],
-            constraints: {
-                bagLimit: 0,
-                weights: []
-            }
-        };
 
         this.problems.forEach(function (problem) {
             var reordered = {
+                optimal: problem.optimal,
                 profits: problem.profits,
                 constraints: []
             };
@@ -101,7 +96,7 @@ var ORParser = (function () {
             for (var i = 0; i < problem.weights.length; i++) {
                 var constraint = {
                     bagLimit: problem.bagLimits[i],
-                    weights: problem.bagLimits[i]
+                    weights: problem.weights[i]
                 };
                 reordered.constraints.push(constraint);
             }
