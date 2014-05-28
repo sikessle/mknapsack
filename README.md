@@ -1,4 +1,6 @@
-mknapsack
-=========
+# mknapsack
 
-Solving the multi-dimensional knapsack problem with an advanced algorithm
+## Getting Started
+- Run 'npm install'
+- Run 'bower install'
+- Run 'grunt watch' to recompile on change .less files
