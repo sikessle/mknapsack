@@ -4,10 +4,10 @@
 $(document).ready(function () {
     'use strict';
 
-    var input, parser;
+    var input, parser, problems;
 
     input = $('#input').val();
 
     parser = new ORParser();
-    parser.parse(input);
+    problems = parser.parse(input);
 });
