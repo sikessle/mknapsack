@@ -1,5 +1,3 @@
-/*jslint browser: true*/
-/*global $, jQuery*/
 var ORParser = (function () {
     'use strict';
 
@@ -18,50 +16,47 @@ var ORParser = (function () {
     };
 
     ORParser.prototype.parseTokens = function (tokens) {
-        var i, p, numProfits,
-            numWeights, optimalSolution, numBagLimits, numberOfProblems,
-            problem, k, j, weight;
-
-        numberOfProblems = tokens[0];
+        var numberOfProblems = tokens[0];
         this.logger.log("number of problems: " + numberOfProblems);
         this.logger.log('------------------------');
 
-        i = 1;
-        p = 0;
+        var i = 1;
+        var p = 0;
+        var k;
         while (p < numberOfProblems) {
 
             // problem header: N M OptimalSolution
-            numProfits = this.getToken(tokens, i);
-            i += 1;
-            numWeights = this.getToken(tokens, i);
-            numBagLimits = numWeights;
-            i += 1;
-            optimalSolution = this.getToken(tokens, i);
-            i += 1;
+            var numProfits = this.getToken(tokens, i);
+            i++;
+            var numWeights = this.getToken(tokens, i);
+            var numBagLimits = numWeights;
+            i++;
+            var optimalSolution = this.getToken(tokens, i);
+            i++;
 
             this.logger.log('profits: {}, weights: {}, bagLimits: {}, optimal: {}',
                 numProfits, numWeights, numBagLimits, optimalSolution);
 
 
             // parse single problem block
-            problem = {
+            var problem = {
                 profits: [],
                 weights: [],
                 bagLimits: []
             };
 
             // profits
-            for (k = 0; k < numProfits; k += 1) {
+            for (k = 0; k < numProfits; k++) {
                 problem.profits.push(this.getToken(tokens, i + k));
             }
 
             i += numProfits;
 
             // weights
-            for (k = 0; k < numWeights; k += 1) {
+            for (k = 0; k < numWeights; k++) {
                 problem.weights.push([]);
-                for (j = 0; j < numProfits; j += 1) {
-                    weight = this.getToken(tokens, i + k * numProfits + j);
+                for (var j = 0; j < numProfits; j++) {
+                    var weight = this.getToken(tokens, i + k * numProfits + j);
                     problem.weights[k].push(weight);
                 }
             }
@@ -69,7 +64,7 @@ var ORParser = (function () {
             i += numProfits * numWeights;
 
             // bag limits
-            for (k = 0; k < numBagLimits; k += 1) {
+            for (k = 0; k < numBagLimits; k++) {
                 problem.bagLimits.push(this.getToken(tokens, i + k));
             }
 
@@ -81,7 +76,7 @@ var ORParser = (function () {
 
             this.problems.push(problem);
 
-            p += 1;
+            p++;
         }
     };
 

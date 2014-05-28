@@ -1,5 +1,3 @@
-/*jslint browser: true*/
-/*global $, jQuery*/
 var Logger = (function () {
     'use strict';
 

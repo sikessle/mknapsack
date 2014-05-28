@@ -1,6 +1,3 @@
-/*jslint browser: true*/
-/*global $, jQuery, ORParser, Logger, Genetic*/
-
 $(document).ready(function () {
     'use strict';
 

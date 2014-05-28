@@ -1,5 +1,3 @@
-/*jslint browser: true*/
-/*global $, jQuery*/
 var Genetic = (function () {
     'use strict';
 
