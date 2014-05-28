@@ -4,14 +4,20 @@ var ORParser = (function () {
     function ORParser(logger) {
         this.problems = [];
         this.logger = logger;
+        this.stopwatch = new Stopwatch();
     }
 
     ORParser.prototype.parse = function (input) {
         if (input.length === 0) {
             return;
         }
+        this.stopwatch.start('parse');
+
         var tokens = input.match(/\S+/g);
         this.parseTokens(tokens);
+
+        this.logger.log("Total parsing time: {} ms", this.stopwatch.stop('parse'));
+
         return this.problems;
     };
 
