@@ -1,14 +1,17 @@
 /*jslint browser: true*/
-/*global $, jQuery, console*/
+/*global $, jQuery, this.logger*/
 var ORParser = (function () {
     'use strict';
 
-    function ORParser() {
+    function ORParser(logger) {
         this.problems = [];
+        this.logger = logger;
     }
 
     ORParser.prototype.parse = function (input) {
-        console.log('starting parsing');
+        if (input.length === 0) {
+            return;
+        }
         var tokens = input.match(/\S+/g);
         this.parseTokens(tokens);
         return this.problems;
@@ -20,7 +23,7 @@ var ORParser = (function () {
             problem, k, j, weight;
 
         numberOfProblems = tokens[0];
-        console.log("number of problems: " + numberOfProblems);
+        this.logger.log("number of problems: " + numberOfProblems);
 
         i = 1;
         p = 0;
@@ -34,7 +37,7 @@ var ORParser = (function () {
             optimalSolution = this.getToken(tokens, i);
             i += 1;
 
-            console.log('numProfits: %d, numWeights: %d, numBagLimits: %d, optimal: %d',
+            this.logger.log('numbers: profits: {}, weights: {}, bagLimits: {}, optimal: {}',
                 numProfits, numWeights, numBagLimits, optimalSolution);
 
 
@@ -71,7 +74,7 @@ var ORParser = (function () {
             i += numBagLimits;
 
 
-            console.log('problem: %o', problem);
+            this.logger.log('problem: {}', problem);
 
             this.problems.push(problem);
 

@@ -29,18 +29,46 @@
 
     <div id="page">
 
-        <header class="primary" role="banner">
-            <div class="content">
-                <h1><i class="fa fa-star"></i> mknapsack solver</h1>
+        <nav class="navbar navbar-default">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="#">
+                        <i class="fa fa-star"></i> mknapsack solver
+                    </a>
+                </div>
+                <div class="navbar-left">
+                    <div class="btn-group">
+
+                        <button type="button" class="btn btn-default navbar-btn" id="parse">
+                            Parse
+                        </button>
+
+                        <button type="button" class="btn btn-default navbar-btn" id="solve" disabled>
+                            Solve
+                        </button>
+
+                    </div>
+                </div>
             </div>
-        </header>
-
-        <nav class="primary" role="navigation">
-
         </nav>
 
-        <section id="main" role="main">
-            <textarea id="input" class="form-control" rows="15">
+        <section class="parser">
+
+            <div class="panel panel-info">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Parser</h3>
+                </div>
+                <div class="panel-body">
+                    <ul class="nav nav-tabs">
+                        <li class="active"><a href="#input" data-toggle="tab">Input</a></li>
+                        <li><a href="#parser-log" data-toggle="tab">Log</a></li>
+                    </ul>
+
+                    <div class="tab-content">
+
+                        <div class="tab-pane active fade in" id="input">
+                            <textarea class="form-control" rows="20"
+                                placeholder="paste mknap file contents">
  7
 
  6 10 3800
@@ -177,17 +205,49 @@
  4 8
  6 0 0 3 0 10 6 1 3 0 3 5 4 0 30 12 16 18 3 16 22 30 4 0
  800 650 550 550 650
-            </textarea>
-        </section> <!-- End #main -->
+                            </textarea>
+                        </div>
 
-    </div> <!-- End #page -->
+                        <div class="tab-pane fade" id="parser-log">
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+        </section> <!-- .parser -->
+
+        <section class="results">
+
+            <div class="panel panel-info">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Genetic Algorithm</h3>
+                </div>
+                <div class="panel-body">
+
+                    <ul class="nav nav-tabs">
+                        <li class="active"><a href="#genetic-log" data-toggle="tab">Log</a></li>
+                    </ul>
+
+                    <div class="tab-content">
+                        <div class="tab-pane active fade in" id="genetic-log">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </section> <!-- .results -->
+
+    </div> <!-- #page -->
 
 
     <!-- Javascript at the end for fast page loading -->
     <script src="libs/jquery/dist/jquery.min.js"></script>
     <script src="libs/bootstrap/dist/js/bootstrap.min.js"></script>
     <script src="libs/retina.js/dist/retina.min.js"></script>
+    <script src="javascripts/logger.js"></script>
     <script src="javascripts/orparser.js"></script>
+    <script src="javascripts/genetic.js"></script>
     <script src="javascripts/main.js"></script>
 
 </body>
