@@ -40,10 +40,6 @@ var ORParser = (function () {
             var optimalSolution = this.getToken(tokens, i);
             i++;
 
-            this.logger.log('objects: {}, weights: {}, bagLimits: {}, optimal: {}',
-                numProfits, numWeights, numBagLimits, optimalSolution);
-
-
             // parse single problem block
             var problem = {
                 profits: [],
@@ -76,14 +72,53 @@ var ORParser = (function () {
 
             i += numBagLimits;
 
-
-            this.logger.log('problem: {}', problem);
-            this.logger.log('------------------------');
-
             this.problems.push(problem);
 
             p++;
         }
+
+        this.reorderProblems();
+        this.logProblems();
+    };
+
+    ORParser.prototype.reorderProblems = function () {
+        var reordedProblems = [];
+
+        var p = {
+            profits: [],
+            constraints: {
+                bagLimit: 0,
+                weights: []
+            }
+        };
+
+        this.problems.forEach(function (problem) {
+            var reordered = {
+                profits: problem.profits,
+                constraints: []
+            };
+
+            for (var i = 0; i < problem.weights.length; i++) {
+                var constraint = {
+                    bagLimit: problem.bagLimits[i],
+                    weights: problem.bagLimits[i]
+                };
+                reordered.constraints.push(constraint);
+            }
+            reordedProblems.push(reordered);
+        });
+
+        this.problems = reordedProblems;
+    };
+
+    ORParser.prototype.logProblems = function () {
+        var logger = this.logger;
+
+        this.problems.forEach(function (problem, i) {
+            logger.log('- Problem {}:', i + 1);
+            logger.log(problem);
+            logger.log('-------------------------');
+        });
     };
 
     ORParser.prototype.getToken = function (tokens, i) {
