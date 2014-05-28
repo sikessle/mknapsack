@@ -40,7 +40,7 @@ var ORParser = (function () {
             var optimalSolution = this.getToken(tokens, i);
             i++;
 
-            this.logger.log('profits: {}, weights: {}, bagLimits: {}, optimal: {}',
+            this.logger.log('objects: {}, weights: {}, bagLimits: {}, optimal: {}',
                 numProfits, numWeights, numBagLimits, optimalSolution);
 
 
