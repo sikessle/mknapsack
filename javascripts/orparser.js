@@ -1,5 +1,5 @@
 /*jslint browser: true*/
-/*global $, jQuery, this.logger*/
+/*global $, jQuery*/
 var ORParser = (function () {
     'use strict';
 

@@ -1,18 +1,20 @@
 /*jslint browser: true*/
-/*global $, jQuery, ORParser*/
+/*global $, jQuery, ORParser, Logger, Genetic*/
 
 $(document).ready(function () {
     'use strict';
 
-    var input, parser, problems, genetic, parserLogger, geneticLogger;
+    var input, parser, problems, genetic, parserLogger, geneticLogger, geneticParams;
+
+    geneticParams = {
+        prop: 'val'
+    };
 
     parserLogger = new Logger('#parser-log textarea');
     geneticLogger = new Logger('#genetic-log textarea');
 
     parser = new ORParser(parserLogger);
-    genetic = new Genetic({
-        prop: 'val'
-    });
+    genetic = new Genetic(geneticParams, geneticLogger);
 
     $('#parse').click(function () {
         $('.parser .nav-tabs a[href="#parser-log"]').tab('show');
