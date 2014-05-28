@@ -9,8 +9,8 @@ var Genetic = (function () {
 
     Genetic.prototype.solve = function (problems) {
         this.stopwatch.start('total');
-        
-        this.logger.log("solved all problems: {}", problems);
+
+        //this.logger.log("solved all problems: {}", problems);
 
         var totalTime = this.stopwatch.stop('total');
         this.logger.log('total time: {} ms', totalTime);

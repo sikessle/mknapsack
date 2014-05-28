@@ -19,11 +19,11 @@ $(document).ready(function () {
         input = $('#input textarea').val();
         parserLogger.clear();
         problems = parser.parse(input);
-        geneticLogger.clear();
         $('#solve').prop('disabled', false);
     });
 
     $('#solve').click(function () {
+        geneticLogger.clear();
         $('.results').insertBefore('.parser');
         $('.results .nav-tabs a[href="#genetic-log"]').tab('show');
         $('.results .panel').removeClass('panel-default').addClass('panel-success');
