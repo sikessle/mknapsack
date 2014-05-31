@@ -12,24 +12,31 @@ var Genetic = (function () {
     }
 
     /*
+        Sets the current problem.
+        @problem
+    */
+    EvaluationModule.prototype.setProblem = function (problem) {
+        this.problem = problem;
+    };
+
+    /*
         Evaluates the quality of a solution.
         If any constraint is violated -1 is returned,
         otherwise a non-negative integer.
         @solution
-        @problem
         @return the evaluated value. -1 if constraints are violated, else a
                 value >= 0.
     */
-    EvaluationModule.prototype.evaluate = function (solution, problem) {
+    EvaluationModule.prototype.evaluate = function (solution) {
         var totalProfit = 0;
 
         for (var i = 0; i < solution.length; i++) {
             if (solution[i] === 1) {
-                totalProfit += problem.profits[i];
+                totalProfit += this.problem.profits[i];
             }
         }
 
-        var contraintsMet = this.checkConstraints(solution, problem);
+        var contraintsMet = this.checkConstraints(solution);
 
         if (!contraintsMet) {
             return -1;
@@ -43,14 +50,14 @@ var Genetic = (function () {
         @problem
         @return true if constraints are met, else false
     */
-    EvaluationModule.prototype.checkConstraints = function (solution, problem) {
+    EvaluationModule.prototype.checkConstraints = function (solution) {
         var totalWeight, constraintWeights, constraintMet, bagLimit;
 
         constraintMet = true;
 
-        for (var c = 0; c < problem.constraints.length; c++) {
-            constraintWeights = problem.constraints[c].weights;
-            bagLimit = problem.constraints[c].bagLimit;
+        for (var c = 0; c < this.problem.constraints.length; c++) {
+            constraintWeights = this.problem.constraints[c].weights;
+            bagLimit = this.problem.constraints[c].bagLimit;
             totalWeight = this.getWeight(solution, constraintWeights);
             if (totalWeight > bagLimit) {
                 constraintMet = false;
@@ -100,7 +107,8 @@ var Genetic = (function () {
         @return a population with solutions [ [0, 1, ..], [1, 1, ..], .. ]
     */
     PopulationModule.prototype.createInitial = function () {
-
+        // TODO
+        return [[1, 1, 1, 1, 1, 1]];
     };
 
     // -------------------------------------------------------------------------
@@ -111,33 +119,36 @@ var Genetic = (function () {
         - fitness techniques
         - crossover
         - mutation
+
+        @evaluationModule The eval module to use. must have a
+                            evaluate(solution, problem) function.
     */
-    function ReproductionModule() {
-        this.evaluationModule = new EvaluationModule();
+    function ReproductionModule(evaluationModule) {
+        this.evaluationModule = evaluationModule;
     }
 
     /*
         fitness-is-evaluation.
         @solution must be [0, 1, ..] for choosing the items to pack.
-        @problem
         @return -1 if constraints violated else >= 0
     */
-    ReproductionModule.prototype.fitness = function (solution, problem) {
-        return this.evaluationModule.evaluate(solution, problem);
+    ReproductionModule.prototype.getFitness = function (solution) {
+        return this.evaluationModule.evaluate(solution);
     };
 
     /*
         Survival of the fittest! Returns the fittest solution in a population.
         @population [] of solutions: [ [0, 1, ..], [1, 1, ..], .. ]
-        @return the fittest solution
+        @return the fittest solution or an empty solution []
     */
-    ReproductionModule.prototype.getFittestSolution = function (population, problem) {
-        var highestFitness = -1;
-        var fittestSolution;
-        var fitness;
+    ReproductionModule.prototype.getFittestSolution = function (population) {
+        var highestFitness = -1,
+            fittestSolution = [],
+            fitness,
+            repoModule = this;
 
         population.forEach(function (solution) {
-            fitness = this.fitness(solution, problem);
+            fitness = repoModule.getFitness(solution);
             if (fitness > highestFitness) {
                 highestFitness = fitness;
                 fittestSolution = solution;
@@ -148,12 +159,14 @@ var Genetic = (function () {
     };
 
     /*
-        selects two suitable parents.
+        Returns the offspring generation
         @population [] of solutions: [ [0, 1, ..], [1, 1, ..], .. ]
-        @return [] with two members
+        @return the new next population same size but with the offsprings of the
+                given population.
     */
-    ReproductionModule.prototype.selectParents = function (population) {
-        // use getFittestSolution twice...
+    ReproductionModule.prototype.generateOffspringPopulation = function (population) {
+        // TODO
+        return population;
     };
 
     // -------------------------------------------------------------------------
@@ -169,7 +182,7 @@ var Genetic = (function () {
         this.problem = {};
         this.evaluationModule = new EvaluationModule();
         this.populationModule = new PopulationModule(params.populationSize);
-        this.reproductionModule = new ReproductionModule();
+        this.reproductionModule = new ReproductionModule(this.evaluationModule);
     }
 
     /*
@@ -179,32 +192,45 @@ var Genetic = (function () {
         this.stopwatch.start('total');
 
         this.problem = problem;
+
+        this.initModules();
         this.startSolving();
 
         var totalTime = this.stopwatch.stop('total');
         this.logger.log('total time: {} ms', totalTime);
     };
 
+    // initializes the modules
+    Genetic.prototype.initModules = function () {
+        this.evaluationModule.setProblem(this.problem);
+    };
+
     // the main solving controller
     Genetic.prototype.startSolving = function () {
-        var population, parents, children;
+        var population;
 
         population = this.populationModule.createInitial();
 
         for (var gen = 0; gen < this.params.generationsLimit; gen++) {
             this.logger.log("generation {}:", gen);
 
-            parents = this.reproductionModule.selectParents(population);
+            // TODO log current population
 
+            population = this.reproductionModule.generateOffspringPopulation(population);
 
             this.logSeparator();
         }
+
+        var bestSolution = this.reproductionModule.getFittestSolution(population);
+        var quality = this.evaluationModule.evaluate(bestSolution);
+        this.logger.log("best solution with profit: {} is {}", quality, bestSolution);
     };
 
     Genetic.prototype.logSeparator = function () {
         this.logger.log("---------------------");
     };
-
+// TODO !!!!!!!!!!!!!!!!!!!!!!!!!! make data capture object to capture all relevant data
+// for plots aso.
     return Genetic;
 
 }());
