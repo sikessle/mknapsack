@@ -4,7 +4,7 @@ $(document).ready(function () {
     var input, parser, problems, genetic, parserLogger, geneticLogger, geneticParams;
 
     geneticParams = {
-        generationsLimit: 20,
+        generationsLimit: 1,
         populationSize: 10
     };
 
@@ -30,7 +30,7 @@ $(document).ready(function () {
         $('.results').insertBefore('.parser');
         $('.results .nav-tabs a[href="#genetic-log"]').tab('show');
         $('.results .panel').removeClass('panel-default').addClass('panel-success');
-        // TODO currently only solves the first problem in the file
+        // FIXME currently only solves the first problem in the file. make user-selectable
         genetic.solve(problems[0]);
     });
 
