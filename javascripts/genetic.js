@@ -87,6 +87,8 @@ var Genetic = (function () {
         - initialization
         - population size
         - replacement of members by given members
+
+        @populationSize The number of solutions per population.
     */
     function PopulationModule(populationSize) {
         this.size = populationSize;
@@ -125,12 +127,33 @@ var Genetic = (function () {
     };
 
     /*
-        selects parents based on fitness.
+        Survival of the fittest! Returns the fittest solution in a population.
+        @population [] of solutions: [ [0, 1, ..], [1, 1, ..], .. ]
+        @return the fittest solution
+    */
+    ReproductionModule.prototype.getFittestSolution = function (population, problem) {
+        var highestFitness = -1;
+        var fittestSolution;
+        var fitness;
+
+        population.forEach(function (solution) {
+            fitness = this.fitness(solution, problem);
+            if (fitness > highestFitness) {
+                highestFitness = fitness;
+                fittestSolution = solution;
+            }
+        });
+
+        return fittestSolution;
+    };
+
+    /*
+        selects two suitable parents.
         @population [] of solutions: [ [0, 1, ..], [1, 1, ..], .. ]
         @return [] with two members
     */
     ReproductionModule.prototype.selectParents = function (population) {
-
+        // use getFittestSolution twice...
     };
 
     // -------------------------------------------------------------------------
@@ -164,23 +187,15 @@ var Genetic = (function () {
 
     // the main solving controller
     Genetic.prototype.startSolving = function () {
+        var population, parents, children;
 
-        var population = this.populationModule.createInitial();
+        population = this.populationModule.createInitial();
 
         for (var gen = 0; gen < this.params.generationsLimit; gen++) {
             this.logger.log("generation {}:", gen);
 
-            this.reproductionModule.
-            /*
-                TODO
-                work on population.
+            parents = this.reproductionModule.selectParents(population);
 
-            */
-
-            var solution = [1, 1, 1, 1, 1, 1];
-            var profit = this.reproductionModule.fitness(solution, this.problem);
-            this.logger.log("fitness of {}:\n == {} ==", solution, profit);
-            this.logger.log("problem: {}", this.problem);
 
             this.logSeparator();
         }
