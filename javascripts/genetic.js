@@ -169,6 +169,13 @@ var Genetic = (function () {
         return population;
     };
 
+    /**
+     * Checks if the given solution is valid (quality >= 0) and not already in the
+     * population (avoid double solutions).
+     * @param {Solution} solution The solution to check against the population.
+     * @param {Population} population 
+     * @returns {Boolean} true if the solution is valid and not twice in the population.
+     */
     PopulationModule.prototype.isValidAndNotDouble = function (solution, population) {
         var isValid = this.evaluation.evaluate(solution) >= 0;
         var isDouble = false;
