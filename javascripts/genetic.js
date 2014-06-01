@@ -154,6 +154,7 @@ var Genetic = (function () {
     PopulationModule.prototype.createInitial = function (solutionSize) {
         var population = [], packed;
 
+        // create randomly a valid population
         while (population.length < this.size) {
             var solution = [];
             for (var s = 0; s < solutionSize; s++) {
@@ -170,7 +171,22 @@ var Genetic = (function () {
 
     PopulationModule.prototype.isValidAndNotDouble = function (solution, population) {
         var isValid = this.evaluation.evaluate(solution) >= 0;
-        var isDouble = false; // TODO check for double in pop..
+        var isDouble = false;
+
+        for (var s = 0; s < population.length; s++) {
+            var isSame = true;
+            for (var i = 0; i < solution.length; i++) {
+                if (population[s][i] != solution[i]) {
+                    isSame = false;
+                    break;
+                }
+            }
+            if (isSame) {
+                isDouble = true;
+                break;
+            }
+        }
+
         return this.evaluation.evaluate(solution) >= 0 && !isDouble;
     };
 
