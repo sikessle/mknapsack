@@ -3,22 +3,41 @@ var Genetic = (function () {
 
     // -------------------------------------------------------------------------
 
-    /*
-        Evaluation Module.
-        Evaluates the solutions.
-        It has domain knowledge.
-    */
+    /**
+     * Represents a problem to optimize.
+     * @typedef {Object} problem
+     * @property {number} optimal - the optimal solution or 0 if unknown
+     * @property {Array<number>} profits - the profit (value) of each item.
+     * @property {Array<constraint>} constraints - multiple constraints
+     */
+
+     /**
+      * Represents a constraint.
+      * @typedef {Object} constraint
+      * @property {number} bagLimit - the total limit of the bag
+      * @property {Array<number>} weights - the weights of each item
+      */
+
+    // -------------------------------------------------------------------------
+
+    /**
+     * Evaluation Module.
+     * Evaluates the solutions.
+     * It has domain knowledge.
+     * @constructor
+     */
     function EvaluationModule() {
     }
 
-    /*
-        Sets the current problem.
-        @problem
-    */
+    /**
+     * Sets the current problem.
+     * @param {problem} problem
+     */
     EvaluationModule.prototype.setProblem = function (problem) {
         this.problem = problem;
     };
 
+TODO JSDOC
     /*
         Evaluates the quality of a solution.
         If any constraint is violated -1 is returned,
@@ -229,8 +248,7 @@ var Genetic = (function () {
     Genetic.prototype.logSeparator = function () {
         this.logger.log("---------------------");
     };
-// TODO !!!!!!!!!!!!!!!!!!!!!!!!!! make data capture object to capture all relevant data
-// for plots aso.
+// TODO !!!!!!!!!!!!!!!!!!!!!!!!!! pass in logger to capture plot data..
     return Genetic;
 
 }());
