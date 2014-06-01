@@ -135,7 +135,8 @@ var Genetic = (function () {
      * Maintains the population.
      * - initialization
      * - population size
-     * - replacement of members by given members
+     * - checking for doubles and ensuring only valid solutions are part of the
+     *   population
      *
      * @constructor
      * @param {Number} populationSize The number of solutions per population.
@@ -173,7 +174,7 @@ var Genetic = (function () {
      * Checks if the given solution is valid (quality >= 0) and not already in the
      * population (avoid double solutions).
      * @param {Solution} solution The solution to check against the population.
-     * @param {Population} population 
+     * @param {Population} population
      * @returns {Boolean} true if the solution is valid and not twice in the population.
      */
     PopulationModule.prototype.isValidAndNotDouble = function (solution, population) {
@@ -250,7 +251,7 @@ var Genetic = (function () {
      * @returns {Population} the next generation of a population
      */
     ReproductionModule.prototype.generateOffspringPopulation = function (population) {
-        // TODO
+        // TODO while popoulation size < target size generate... bla bla
         return population;
     };
 
