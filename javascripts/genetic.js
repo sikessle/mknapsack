@@ -410,6 +410,7 @@ var Genetic = (function () {
      * @param {Number} params.mutateProbability between 0 and 1
      * @param {Number} params.crossoverProbability between 0 and 1
      * @param {Number} params.populationSize
+     * @param {Number} params.generationsLimit
      * @param {EvaluationModule} params.evaluationModule
      * @param {Logger} logger
      */

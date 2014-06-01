@@ -56,6 +56,60 @@
             </div>
         </nav>
 
+        <section class="settings">
+            <div class="container">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Settings</h3>
+                    </div>
+                    <div class="panel-body form-horizontal">
+
+                        <div class="form-group">
+                            <label class="control-label col-sm-2">No. of problem</label>
+                            <div class="col-sm-10">
+                                <input type="text" placeholder="# of problem"
+                                    class="form-control" value="0" id="problemIndex">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label col-sm-2">Mutation probability (0 to 1)</label>
+                            <div class="col-sm-10">
+                            <input type="text" placeholder="mutation probability (0 to 1)"
+                                class="form-control" value="0.1" id="mutateProbability">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label col-sm-2">crossover probability (0 to 1)</label>
+                            <div class="col-sm-10">
+                            <input type="text" placeholder="crossover probability (0 to 1)"
+                                class="form-control" value="1" id="crossoverProbability">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label col-sm-2">generations limit</label>
+                            <div class="col-sm-10">
+                            <input type="text" placeholder="generations limit"
+                                class="form-control" value="3000" id="generationsLimit">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label col-sm-2">population size</label>
+                            <div class="col-sm-10">
+                            <input type="text" placeholder="population size"
+                                class="form-control" value="8" id="populationSize">
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+        </section> <!-- .settings -->
+
         <section class="parser">
 
             <div class="panel panel-info">
@@ -2833,7 +2887,7 @@
  32 789 704 781 951 387 218
  507 54 168 958 388 730 728
  202 466
- 33604 34889 37341 39585 36775 
+ 33604 34889 37341 39585 36775
                             </textarea>
                             <span class="help-block">
                                  Formatting requirements:<br>
