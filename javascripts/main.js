@@ -4,6 +4,7 @@ $(document).ready(function () {
     var input, parser, problems, genetic, parserLogger, geneticLogger, geneticParams;
 
     geneticParams = {
+        delay: 5,
         generationsLimit: 100,
         populationSize: 8
     };

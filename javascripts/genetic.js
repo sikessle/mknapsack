@@ -370,6 +370,7 @@ var Genetic = (function () {
      * Controls the three modules and their interaction.
      * @constructor
      * @param {Object} params Parameters to control the algorithm
+     * @param {Number} params.delay time between consecutive generations computation.
      * @param {Number} params.populationSize
      * @param {EvaluationModule} params.evaluationModule
      * @param {Logger} logger
@@ -418,13 +419,18 @@ var Genetic = (function () {
                 var quality = self.evaluationModule.evaluate(bestSolution);
                 self.logger.log("total best solution with profit {} is {} (optimal: {})",
                     quality, bestSolution, self.problem.optimal);
+                return;
             }
+
             self.logger.log("generation {}:", gen);
             self.logger.log("population: {}", population);
+
             population = self.generateOffspringPopulation(population);
             gen++;
+
             self.logSeparator();
-            setTimeout(generateOffspringsController, 10);
+
+            setTimeout(generateOffspringsController, self.params.delay);
         }
 
         generateOffspringsController();
