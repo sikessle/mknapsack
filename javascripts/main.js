@@ -4,11 +4,11 @@ $(document).ready(function () {
     var input, parser, problems, genetic, parserLogger, geneticLogger, geneticParams;
 
     geneticParams = {
-        delay: 5,
+        delay: 10,
         mutateProbability: 0.01,
         crossoverProbability: 1,
-        generationsLimit: 100,
-        populationSize: 8
+        generationsLimit: 1,
+        populationSize: 4
     };
 
     parserLogger = new Logger('#parser-log textarea');

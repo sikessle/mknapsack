@@ -422,15 +422,10 @@ var Genetic = (function () {
      * @param {Problem} problem
      */
     Genetic.prototype.solve = function (problem) {
-        this.stopwatch.start('total');
-
         this.problem = problem;
 
         this.initModules();
         this.solveProblemInternal();
-
-        var totalTime = this.stopwatch.stop('total');
-        this.logger.log('total time: {} ms', totalTime);
     };
 
     /** initializes the modules */
@@ -440,7 +435,9 @@ var Genetic = (function () {
 
     /** the main solving controller */
     Genetic.prototype.solveProblemInternal = function () {
-        var population, fittestSolution, self = this, gen = 0;
+        var population, self = this, gen = 0;
+
+        self.stopwatch.start('total');
 
         population = this.populationModule.createInitial(this.problem.profits.length);
 
@@ -450,16 +447,21 @@ var Genetic = (function () {
                 var quality = self.evaluationModule.evaluate(bestSolution);
                 self.logger.log("total best solution with profit {} is {} (optimal: {})",
                     quality, bestSolution, self.problem.optimal);
+                var totalTime = self.stopwatch.stop('total');
+                self.logger.log('total time: {} ms', totalTime);
                 return;
             }
 
-            self.logger.log("generation {}", gen);
-            self.logger.log("population: {}", population);
+            //self.logger.log("generation {}", gen);
+            //self.logger.log("population: {}", population);
+            var bestSolutionCurrent = self.reproductionModule.getFittestSolution(population);
+            var qualityCurrent = self.evaluationModule.evaluate(bestSolutionCurrent);
+            self.logger.log(qualityCurrent);
 
             population = self.generateOffspringPopulation(population);
             gen++;
 
-            self.logSeparator();
+            //self.logSeparator();
 
             setTimeout(generateOffspringsController, self.params.delay);
         }
