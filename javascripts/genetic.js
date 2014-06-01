@@ -217,7 +217,9 @@ var Genetic = (function () {
     /**
      * Controls the three modules and their interaction.
      * @constructor
-     * @param {Object} params
+     * @param {Object} params Parameters to control the algorithm
+     * @param {Number} params.populationSize 
+     * @param {EvaluationModule} params.evaluationModule
      * @param {Logger} logger
      */
     function Genetic(params, logger) {
