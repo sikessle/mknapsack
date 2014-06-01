@@ -153,15 +153,23 @@ var Genetic = (function () {
      * @returns {Population}
      */
     PopulationModule.prototype.createInitial = function (solutionSize) {
-        var population = [], packed;
+        var population = [], packed, r;
 
         // create randomly a valid population
         while (population.length < this.populationSize) {
             var solution = [];
+
             for (var s = 0; s < solutionSize; s++) {
                 packed = Math.round(Math.random());
                 solution.push(packed);
             }
+
+            // remove item as long as the solution is not valid.
+            while (this.evaluation.evaluate(solution) < 0) {
+                r = Math.floor(Math.random() * solution.length);
+                solution[r] = 0;
+            }
+
             if (this.isValidAndNotDouble(solution, population)) {
                 population.push(solution);
             }
@@ -452,16 +460,16 @@ var Genetic = (function () {
                 return;
             }
 
-            //self.logger.log("generation {}", gen);
-            //self.logger.log("population: {}", population);
+            self.logger.log("generation {}", gen);
+
+            /*
+            TODO move to data logger
             var bestSolutionCurrent = self.reproductionModule.getFittestSolution(population);
             var qualityCurrent = self.evaluationModule.evaluate(bestSolutionCurrent);
-            self.logger.log(qualityCurrent);
+            self.logger.log(qualityCurrent);*/
 
             population = self.generateOffspringPopulation(population);
             gen++;
-
-            //self.logSeparator();
 
             setTimeout(generateOffspringsController, self.params.delay);
         }
@@ -498,10 +506,6 @@ var Genetic = (function () {
         }
 
         return offspringPopulation;
-    };
-
-    Genetic.prototype.logSeparator = function () {
-        this.logger.log("---------------------");
     };
 
     return Genetic;
