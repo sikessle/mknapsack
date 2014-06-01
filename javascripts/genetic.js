@@ -357,16 +357,19 @@ var Genetic = (function () {
      */
     ReproductionModule.prototype.getOffsprings = function (parents) {
         var offsprings = [];
-        var p1, p2, c1, c2;
+        var parentIndex;
+        var c1, c2;
 
-        p1 = parents[0];
-        p2 = parents[1];
-
-        c1 = p1.slice(0);
-        c2 = p2.slice(0);
+        c1 = parents[0].slice(0);
+        c2 = parents[1].slice(0);
 
         if (this.isProbable(this.crossoverProbability)) {
-            // crossover
+            for (var i = 0; i < parents[0].length; i++) {
+                parentIndex = this.isProbable(0.5) ? 0 : 1;
+
+                c1[i] = parents[parentIndex][i];
+                c2[i] = parents[1 - parentIndex][i];
+            }
         }
 
         offsprings.push(c1);
