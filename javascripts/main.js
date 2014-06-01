@@ -10,6 +10,7 @@ $(document).ready(function () {
 
     parserLogger = new Logger('#parser-log textarea');
     geneticLogger = new Logger('#genetic-log textarea');
+    geneticLogger.setReverse(true);
 
     parser = new ORParser(parserLogger);
     // TODO setDataLogger (for data capturing)

@@ -3,7 +3,12 @@ var Logger = (function () {
 
     function Logger(target) {
         this.$target = $(target);
+        this.reverse = false;
     }
+
+    Logger.prototype.setReverse = function (flag) {
+        this.reverse = flag;
+    };
 
     Logger.prototype.log = function (msg) {
         var line, i, arg;
@@ -29,7 +34,11 @@ var Logger = (function () {
     };
 
     Logger.prototype.writeOut = function (msg) {
-        this.$target.append(msg + '\n');
+        if (this.reverse) {
+            this.$target.prepend(msg + '\n');
+        } else {
+            this.$target.append(msg + '\n');
+        }
     };
 
     Logger.prototype.clear = function () {
