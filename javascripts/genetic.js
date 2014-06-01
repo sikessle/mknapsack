@@ -139,10 +139,11 @@ var Genetic = (function () {
      *
      * @constructor
      * @param {Number} populationSize The number of solutions per population.
+     * @param {EvaluationModule} evaluationModule
      */
-    function PopulationModule(populationSize) {
+    function PopulationModule(populationSize, evaluationModule) {
         this.size = populationSize;
-        this.evaluation = new EvaluationModule();
+        this.evaluation = evaluationModule;
     }
 
     /**
@@ -151,19 +152,26 @@ var Genetic = (function () {
      * @returns {Population}
      */
     PopulationModule.prototype.createInitial = function (solutionSize) {
-        var population = [];
+        var population = [], packed;
 
-        while (population.size < this.size) {
+        while (population.length < this.size) {
             var solution = [];
             for (var s = 0; s < solutionSize; s++) {
-                solution.push(0);
+                packed = Math.round(Math.random());
+                solution.push(packed);
             }
-            if (this.evaluation.evaluate(solution) >= 0) {
+            if (this.isValidAndNotDouble(solution, population)) {
                 population.push(solution);
             }
         }
 
         return population;
+    };
+
+    PopulationModule.prototype.isValidAndNotDouble = function (solution, population) {
+        var isValid = this.evaluation.evaluate(solution) >= 0;
+        var isDouble = false; // TODO check for double in pop..
+        return this.evaluation.evaluate(solution) >= 0 && !isDouble;
     };
 
     // -------------------------------------------------------------------------
@@ -240,7 +248,8 @@ var Genetic = (function () {
         this.stopwatch = new Stopwatch();
         this.problem = {};
         this.evaluationModule = new EvaluationModule();
-        this.populationModule = new PopulationModule(params.populationSize);
+        this.populationModule = new PopulationModule(params.populationSize,
+            this.evaluationModule);
         this.reproductionModule = new ReproductionModule(this.evaluationModule);
     }
 
