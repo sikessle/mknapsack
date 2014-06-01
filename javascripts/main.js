@@ -5,6 +5,7 @@ $(document).ready(function () {
 
     geneticParams = {
         delay: 5,
+        mutateProbability: 0.01,
         generationsLimit: 100,
         populationSize: 8
     };

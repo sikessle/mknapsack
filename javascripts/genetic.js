@@ -209,11 +209,11 @@ var Genetic = (function () {
      *
      * @constructor
      * @param {EvaluationModule} evaluationModule The eval module to use.
-     * @param {Number} mutationProbability The probability of a mutation (0 to 1)
+     * @param {Number} mutateProbability The probability of a mutation (0 to 1)
      */
-    function ReproductionModule(evaluationModule, mutationProbability) {
+    function ReproductionModule(evaluationModule, mutateProbability) {
         this.evaluationModule = evaluationModule;
-        this.mutationProbability = mutationProbability;
+        this.mutateProbability = mutateProbability;
     }
 
     /**
@@ -357,10 +357,13 @@ var Genetic = (function () {
      * @param {Solution} solution the solution to mutate
      */
     ReproductionModule.prototype.mutate = function (solution) {
-        // TODO mutate with probability
-        //this.mutationProbability;
-        var r = Math.floor(Math.random() * solution.length);
-        solution[r] = 1 - solution[r];
+        var r = Math.random();
+
+        if (r <= this.mutateProbability) {
+            var pos = Math.floor(Math.random() * solution.length);
+            solution[pos] = 1 - solution[pos];
+            console.log("did mutate at pos {}", pos);
+        }
     };
 
     // -------------------------------------------------------------------------
@@ -371,6 +374,7 @@ var Genetic = (function () {
      * @constructor
      * @param {Object} params Parameters to control the algorithm
      * @param {Number} params.delay time between consecutive generations computation.
+     * @param {Number} params.mutateProbability between 0 and 1
      * @param {Number} params.populationSize
      * @param {EvaluationModule} params.evaluationModule
      * @param {Logger} logger
@@ -383,7 +387,8 @@ var Genetic = (function () {
         this.evaluationModule = new EvaluationModule();
         this.populationModule = new PopulationModule(params.populationSize,
             this.evaluationModule);
-        this.reproductionModule = new ReproductionModule(this.evaluationModule);
+        this.reproductionModule = new ReproductionModule(this.evaluationModule,
+            params.mutateProbability);
     }
 
     /**
