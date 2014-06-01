@@ -6,6 +6,7 @@ $(document).ready(function () {
     geneticParams = {
         delay: 5,
         mutateProbability: 0.01,
+        crossoverProbability: 1,
         generationsLimit: 100,
         populationSize: 8
     };
@@ -15,7 +16,7 @@ $(document).ready(function () {
     geneticLogger.setReverse(true);
 
     parser = new ORParser(parserLogger);
-    // TODO setDataLogger (for data capturing)
+    // TODO setDataLogger (for data capturing) (bufferedLogger decorator)
     genetic = new Genetic(geneticParams, geneticLogger);
 
     $('#parse').click(function () {

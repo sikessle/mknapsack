@@ -210,10 +210,12 @@ var Genetic = (function () {
      * @constructor
      * @param {EvaluationModule} evaluationModule The eval module to use.
      * @param {Number} mutateProbability The probability of a mutation (0 to 1)
+     * @param {Number} crossoverProbability The probability of a crossover (0 to 1)
      */
-    function ReproductionModule(evaluationModule, mutateProbability) {
+    function ReproductionModule(evaluationModule, mutateProbability, crossoverProbability) {
         this.evaluationModule = evaluationModule;
         this.mutateProbability = mutateProbability;
+        this.crossoverProbability = crossoverProbability;
     }
 
     /**
@@ -315,6 +317,17 @@ var Genetic = (function () {
         return parents;
     };
 
+
+
+    /**
+     * Checks if the event with the given probability happened.
+     * @param {Number} probability the probability of the event
+     * @returns {Boolean} true if is probable
+     */
+    ReproductionModule.prototype.isProbable = function (probability) {
+        return Math.random() <= probability;
+    }
+
     /**
      * Returns a solution based on a random number. If this random number is in
      * the interval i, then return solution i.
@@ -338,16 +351,26 @@ var Genetic = (function () {
 
     /**
      * Returns two children of the given two parents by crossover-techniques.
+     * Using uniform crossover with probabilty of 0.5.
      * @param {Array<Solution>} parents two parents
      * @returns {Array<Solution>} two offsprings
      */
     ReproductionModule.prototype.getOffsprings = function (parents) {
         var offsprings = [];
+        var p1, p2, c1, c2;
 
-        // TODO crossover
-        for (var i = 0;i < 2; i++) {
-            offsprings.push(parents[i].slice(0));
+        p1 = parents[0];
+        p2 = parents[1];
+
+        c1 = p1.slice(0);
+        c2 = p2.slice(0);
+
+        if (this.isProbable(this.crossoverProbability)) {
+            // crossover
         }
+
+        offsprings.push(c1);
+        offsprings.push(c2);
 
         return offsprings;
     };
@@ -359,10 +382,9 @@ var Genetic = (function () {
     ReproductionModule.prototype.mutate = function (solution) {
         var r = Math.random();
 
-        if (r <= this.mutateProbability) {
+        if (this.isProbable(this.mutateProbability)) {
             var pos = Math.floor(Math.random() * solution.length);
             solution[pos] = 1 - solution[pos];
-            console.log("did mutate at pos {}", pos);
         }
     };
 
@@ -375,6 +397,7 @@ var Genetic = (function () {
      * @param {Object} params Parameters to control the algorithm
      * @param {Number} params.delay time between consecutive generations computation.
      * @param {Number} params.mutateProbability between 0 and 1
+     * @param {Number} params.crossoverProbability between 0 and 1
      * @param {Number} params.populationSize
      * @param {EvaluationModule} params.evaluationModule
      * @param {Logger} logger
@@ -388,7 +411,7 @@ var Genetic = (function () {
         this.populationModule = new PopulationModule(params.populationSize,
             this.evaluationModule);
         this.reproductionModule = new ReproductionModule(this.evaluationModule,
-            params.mutateProbability);
+            params.mutateProbability, params.crossoverProbability);
     }
 
     /**
@@ -427,7 +450,7 @@ var Genetic = (function () {
                 return;
             }
 
-            self.logger.log("generation {}:", gen);
+            self.logger.log("generation {}", gen);
             self.logger.log("population: {}", population);
 
             population = self.generateOffspringPopulation(population);
