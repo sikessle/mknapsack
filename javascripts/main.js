@@ -8,7 +8,7 @@ $(document).ready(function () {
         mutateProbability: 0.01,
         crossoverProbability: 1,
         generationsLimit: 1,
-        populationSize: 4
+        populationSize: 1
     };
 
     parserLogger = new Logger('#parser-log textarea');

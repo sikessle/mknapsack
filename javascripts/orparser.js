@@ -110,7 +110,7 @@ var ORParser = (function () {
         var logger = this.logger;
 
         this.problems.forEach(function (problem, i) {
-            logger.log('- Problem {}:', i + 1);
+            logger.log('- Problem {}:', i);
             logger.log(problem);
             logger.log('-------------------------');
         });
