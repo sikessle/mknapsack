@@ -5,7 +5,7 @@ $(document).ready(function () {
 
     geneticParams = {
         generationsLimit: 1,
-        populationSize: 10
+        populationSize: 4
     };
 
     parserLogger = new Logger('#parser-log textarea');

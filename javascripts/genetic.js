@@ -147,11 +147,23 @@ var Genetic = (function () {
 
     /**
      * Creates an initial population with solutions and returns it.
+     * @param {Number} solutionSize the number of numbers a solution must have
      * @returns {Population}
      */
-    PopulationModule.prototype.createInitial = function () {
-        // TODO
-        return [[1, 0, 0, 0, 1, 1]];
+    PopulationModule.prototype.createInitial = function (solutionSize) {
+        var population = [];
+
+        while (population.size < this.size) {
+            var solution = [];
+            for (var s = 0; s < solutionSize; s++) {
+                solution.push(0);
+            }
+            if (this.evaluation.evaluate(solution) >= 0) {
+                population.push(solution);
+            }
+        }
+
+        return population;
     };
 
     // -------------------------------------------------------------------------
@@ -257,7 +269,7 @@ var Genetic = (function () {
     Genetic.prototype.solveProblemInternal = function () {
         var population, fittestSolution;
 
-        population = this.populationModule.createInitial();
+        population = this.populationModule.createInitial(this.problem.profits.length);
 
         for (var gen = 0; gen < this.params.generationsLimit; gen++) {
             this.logger.log("generation {}:", gen);
