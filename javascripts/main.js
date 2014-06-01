@@ -4,8 +4,8 @@ $(document).ready(function () {
     var input, parser, problems, genetic, parserLogger, geneticLogger, geneticParams;
 
     geneticParams = {
-        generationsLimit: 1,
-        populationSize: 4
+        generationsLimit: 100,
+        populationSize: 8
     };
 
     parserLogger = new Logger('#parser-log textarea');

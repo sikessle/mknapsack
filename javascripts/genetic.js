@@ -143,7 +143,7 @@ var Genetic = (function () {
      * @param {EvaluationModule} evaluationModule
      */
     function PopulationModule(populationSize, evaluationModule) {
-        this.size = populationSize;
+        this.populationSize = populationSize;
         this.evaluation = evaluationModule;
     }
 
@@ -156,7 +156,7 @@ var Genetic = (function () {
         var population = [], packed;
 
         // create randomly a valid population
-        while (population.length < this.size) {
+        while (population.length < this.populationSize) {
             var solution = [];
             for (var s = 0; s < solutionSize; s++) {
                 packed = Math.round(Math.random());
@@ -209,9 +209,11 @@ var Genetic = (function () {
      *
      * @constructor
      * @param {EvaluationModule} evaluationModule The eval module to use.
+     * @param {Number} mutationProbability The probability of a mutation (0 to 1)
      */
-    function ReproductionModule(evaluationModule) {
+    function ReproductionModule(evaluationModule, mutationProbability) {
         this.evaluationModule = evaluationModule;
+        this.mutationProbability = mutationProbability;
     }
 
     /**
@@ -246,13 +248,119 @@ var Genetic = (function () {
     };
 
     /**
-     * Returns the offspring generation
+     * Computes the probabilites of each solution to be chosen as parent.
      * @param {Population} population
-     * @returns {Population} the next generation of a population
+     * @returns {Array<Number>} the probabilites of each solution, 0 to 1
      */
-    ReproductionModule.prototype.generateOffspringPopulation = function (population) {
-        // TODO while popoulation size < target size generate... bla bla
-        return population;
+    ReproductionModule.prototype.computeProbabilites = function (population) {
+        var probabilites = [],
+            fitnesses = [],
+            fitness,
+            totalFitness = 0,
+            p,
+            self = this;
+
+        population.forEach(function (solution) {
+            fitness = self.getFitness(solution);
+            totalFitness += fitness;
+            fitnesses.push(fitness);
+        });
+
+        fitnesses.forEach(function (fitness) {
+            p = fitness / totalFitness;
+            probabilites.push(p);
+        });
+
+        return probabilites;
+    };
+
+    /**
+     * Returns two parents based on the given probabilites.
+     * @param {Population} population
+     * @param {Array<Number>} probabilites
+     * @returns {Array<Solution>} two unique parents
+     */
+    ReproductionModule.prototype.getParents = function (population, probabilites) {
+        var parents = [],
+        r, parent, intervals = [], interval, isDouble;
+
+        // create intervals
+        for (var i = 0; i < probabilites.length; i++) {
+            interval = {};
+            interval.from = i === 0 ? 0 : intervals[i - 1].to;
+            interval.to = interval.from + probabilites[i];
+            intervals.push(interval);
+        }
+
+        while (parents.length < 2) {
+            r = Math.random();
+            parent = this.getSolutionByProbability(population, intervals, r);
+
+            if (parents.length === 1) {
+                isDouble = true;
+                for (var s = 0; s < parents[0].length; s++) {
+                    if (parent[s] !== parents[0][s]) {
+                        isDouble = false;
+                    }
+                }
+            } else {
+                isDouble = false;
+            }
+
+            if (!isDouble) {
+                parents.push(parent);
+            }
+        }
+
+        return parents;
+    };
+
+    /**
+     * Returns a solution based on a random number. If this random number is in
+     * the interval i, then return solution i.
+     * @param {Population} population
+     * @param {Array<Object>} intervals (from, to)
+     * @param {Number} r a random number
+     * @returns {Solution} a solution
+     */
+    ReproductionModule.prototype.getSolutionByProbability = function (population, intervals, r) {
+        var solution;
+
+        for (var i = 0; i < intervals.length; i++) {
+            if (r >= intervals[i].from && r < intervals[i].to) {
+                solution = population[i];
+                break;
+            }
+        }
+
+        return solution;
+    };
+
+    /**
+     * Returns two children of the given two parents by crossover-techniques.
+     * @param {Array<Solution>} parents two parents
+     * @returns {Array<Solution>} two offsprings
+     */
+    ReproductionModule.prototype.getOffsprings = function (parents) {
+        var offsprings = [];
+
+        // TODO crossover
+        for (var i = 0;i < 2; i++) {
+            offsprings.push(parents[i].slice(0));
+        }
+
+        return offsprings;
+    };
+
+    /**
+     * Mutates with a given probability the solution at one position.
+     * @param {Solution} solution the solution to mutate
+     */
+    ReproductionModule.prototype.mutate = function (solution) {
+        // TODO mutate with probability
+        //this.mutationProbability;
+        var r = Math.floor(Math.random() * solution.length);
+        solution[r] = 1 - solution[r];
     };
 
     // -------------------------------------------------------------------------
@@ -300,25 +408,57 @@ var Genetic = (function () {
 
     /** the main solving controller */
     Genetic.prototype.solveProblemInternal = function () {
-        var population, fittestSolution;
+        var population, fittestSolution, self = this, gen = 0;
 
         population = this.populationModule.createInitial(this.problem.profits.length);
 
-        for (var gen = 0; gen < this.params.generationsLimit; gen++) {
-            this.logger.log("generation {}:", gen);
-            this.logger.log("population: {}", population);
-            fittestSolution = this.reproductionModule.getFittestSolution(population);
-            this.logger.log("quality of best solution: {}",
-                this.evaluationModule.evaluate(fittestSolution));
-
-            population = this.reproductionModule.generateOffspringPopulation(population);
-
-            this.logSeparator();
+        function generateOffspringsController() {
+            if (gen === self.params.generationsLimit) {
+                var bestSolution = self.reproductionModule.getFittestSolution(population);
+                var quality = self.evaluationModule.evaluate(bestSolution);
+                self.logger.log("total best solution with profit {} is {} (optimal: {})",
+                    quality, bestSolution, self.problem.optimal);
+            }
+            self.logger.log("generation {}:", gen);
+            self.logger.log("population: {}", population);
+            population = self.generateOffspringPopulation(population);
+            gen++;
+            self.logSeparator();
+            setTimeout(generateOffspringsController, 10);
         }
 
-        var bestSolution = this.reproductionModule.getFittestSolution(population);
-        var quality = this.evaluationModule.evaluate(bestSolution);
-        this.logger.log("total best solution with profit: {} is {}", quality, bestSolution);
+        generateOffspringsController();
+    };
+
+    /**
+     * Returns the offspring generation
+     * @param {Population} population
+     * @returns {Population} the next generation of a population
+     */
+    Genetic.prototype.generateOffspringPopulation = function (population) {
+        var offspringPopulation = [];
+        var probabilites = [];
+        var repro = this.reproductionModule;
+        var mutatedChild, parents, children;
+
+        probabilites = repro.computeProbabilites(population);
+
+        while (offspringPopulation.length < population.length) {
+            parents = repro.getParents(population, probabilites);
+            children = repro.getOffsprings(parents);
+
+            var i = 0;
+            while (i < children.length && offspringPopulation.length < population.length) {
+                repro.mutate(children[i]);
+                if (this.populationModule.isValidAndNotDouble(children[i],
+                        offspringPopulation)) {
+                    offspringPopulation.push(children[i]);
+                }
+                i++;
+            }
+        }
+
+        return offspringPopulation;
     };
 
     Genetic.prototype.logSeparator = function () {
