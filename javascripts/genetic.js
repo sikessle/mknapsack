@@ -326,7 +326,7 @@ var Genetic = (function () {
      */
     ReproductionModule.prototype.isProbable = function (probability) {
         return Math.random() <= probability;
-    }
+    };
 
     /**
      * Returns a solution based on a random number. If this random number is in
