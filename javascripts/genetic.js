@@ -20,7 +20,7 @@ var Genetic = (function () {
 
     /**
      * Solution vector of a problem.
-     * @typedef {Array<Number>} solution: 0 means the i-th value is not packed
+     * @typedef {Array<Number>} solution - 0 means the i-th value is not packed
      * and 1 means it is packed. i.e. [0, 1, 1, 0] -> packs only the second and
      * third objects.
      */
@@ -151,7 +151,7 @@ var Genetic = (function () {
      */
     PopulationModule.prototype.createInitial = function () {
         // TODO
-        return [[1, 1, 1, 1, 1, 1]];
+        return [[1, 0, 0, 0, 1, 1]];
     };
 
     // -------------------------------------------------------------------------
@@ -218,7 +218,7 @@ var Genetic = (function () {
      * Controls the three modules and their interaction.
      * @constructor
      * @param {Object} params Parameters to control the algorithm
-     * @param {Number} params.populationSize 
+     * @param {Number} params.populationSize
      * @param {EvaluationModule} params.evaluationModule
      * @param {Logger} logger
      */
@@ -255,14 +255,16 @@ var Genetic = (function () {
 
     /** the main solving controller */
     Genetic.prototype.solveProblemInternal = function () {
-        var population;
+        var population, fittestSolution;
 
         population = this.populationModule.createInitial();
 
         for (var gen = 0; gen < this.params.generationsLimit; gen++) {
             this.logger.log("generation {}:", gen);
-
-            // TODO log current population
+            this.logger.log("population: {}", population);
+            fittestSolution = this.reproductionModule.getFittestSolution(population);
+            this.logger.log("quality of best solution: {}",
+                this.evaluationModule.evaluate(fittestSolution));
 
             population = this.reproductionModule.generateOffspringPopulation(population);
 
@@ -271,7 +273,7 @@ var Genetic = (function () {
 
         var bestSolution = this.reproductionModule.getFittestSolution(population);
         var quality = this.evaluationModule.evaluate(bestSolution);
-        this.logger.log("best solution with profit: {} is {}", quality, bestSolution);
+        this.logger.log("total best solution with profit: {} is {}", quality, bestSolution);
     };
 
     Genetic.prototype.logSeparator = function () {
