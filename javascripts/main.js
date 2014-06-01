@@ -34,11 +34,11 @@ $(document).ready(function () {
             populationSize: parseInt($('#populationSize').val())
         };
 
-        console.log(geneticParams);
-
-        // TODO setDataLogger (for data capturing) (bufferedLogger decorator)
         genetic = new Genetic(geneticParams, geneticLogger);
-        genetic.solve(problems[problemIndex]);
+        genetic.solve(problems[problemIndex], function (plotData) {
+            $.plot($("#graph-1"), [plotData]);
+            $('.results .nav-tabs a[href="#plot-1"]').tab('show');
+        });
     });
 
     $('#reset').click(function () {

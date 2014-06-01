@@ -419,6 +419,7 @@ var Genetic = (function () {
         this.logger = logger;
         this.stopwatch = new Stopwatch();
         this.problem = {};
+        this.plotData = [];
         this.evaluationModule = new EvaluationModule();
         this.populationModule = new PopulationModule(params.populationSize,
             this.evaluationModule);
@@ -429,10 +430,13 @@ var Genetic = (function () {
     /**
      * Solves the given single problem and stops the time.
      * @param {Problem} problem
+     * @param {Callback} callback called when the problem is solved and passed the plot data.
      */
-    Genetic.prototype.solve = function (problem) {
+    Genetic.prototype.solve = function (problem, callback) {
         this.problem = problem;
+        this.onFinished = callback;
 
+        this.plotData = [];
         this.initModules();
         this.solveProblemInternal();
     };
@@ -451,6 +455,9 @@ var Genetic = (function () {
         population = this.populationModule.createInitial(this.problem.profits.length);
 
         function generateOffspringsController() {
+
+            self.storePlotData(gen, population);
+
             if (gen === self.params.generationsLimit) {
                 var bestSolution = self.reproductionModule.getFittestSolution(population);
                 var quality = self.evaluationModule.evaluate(bestSolution);
@@ -458,16 +465,11 @@ var Genetic = (function () {
                     quality, bestSolution, self.problem.optimal);
                 var totalTime = self.stopwatch.stop('total');
                 self.logger.log('total time: {} ms', totalTime);
+                self.onFinished(self.plotData);
                 return;
             }
 
             self.logger.log("generation {}", gen);
-
-            /*
-            TODO move to data logger
-            var bestSolutionCurrent = self.reproductionModule.getFittestSolution(population);
-            var qualityCurrent = self.evaluationModule.evaluate(bestSolutionCurrent);
-            self.logger.log(qualityCurrent);*/
 
             population = self.generateOffspringPopulation(population);
             gen++;
@@ -476,6 +478,13 @@ var Genetic = (function () {
         }
 
         generateOffspringsController();
+    };
+
+    /** stores plotting data */
+    Genetic.prototype.storePlotData = function (generation, population) {
+        var bestSolution = this.reproductionModule.getFittestSolution(population);
+        var quality = this.evaluationModule.evaluate(bestSolution);
+        this.plotData.push([generation, quality]);
     };
 
     /**
