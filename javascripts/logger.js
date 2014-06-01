@@ -3,7 +3,6 @@ var Logger = (function () {
 
     function Logger(target) {
         this.$target = $(target);
-        this.jsonIndent = 4;
     }
 
     Logger.prototype.log = function (msg) {
@@ -24,7 +23,7 @@ var Logger = (function () {
         var result = obj;
 
         if (typeof obj === 'object' && JSON) {
-            result = JSON.stringify(obj, null, this.jsonIndent);
+            result = JSON.stringify(obj);
         }
         return result;
     };
