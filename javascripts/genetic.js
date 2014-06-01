@@ -5,18 +5,42 @@ var Genetic = (function () {
 
     /**
      * Represents a problem to optimize.
-     * @typedef {Object} problem
-     * @property {number} optimal - the optimal solution or 0 if unknown
-     * @property {Array<number>} profits - the profit (value) of each item.
-     * @property {Array<constraint>} constraints - multiple constraints
+     * @typedef {Object} Problem
+     * @property {Number} optimal - the optimal solution or 0 if unknown
+     * @property {Array<Number>} profits - the profit (value) of each item.
+     * @property {Array<Constraint>} constraints - multiple constraints
      */
 
-     /**
-      * Represents a constraint.
-      * @typedef {Object} constraint
-      * @property {number} bagLimit - the total limit of the bag
-      * @property {Array<number>} weights - the weights of each item
-      */
+    /**
+     * Represents a constraint.
+     * @typedef {Object} Constraint
+     * @property {Number} bagLimit - the total limit of the bag
+     * @property {Array<Number>} weights - the weights of each item
+     */
+
+    /**
+     * Solution vector of a problem.
+     * @typedef {Array<Number>} solution: 0 means the i-th value is not packed
+     * and 1 means it is packed. i.e. [0, 1, 1, 0] -> packs only the second and
+     * third objects.
+     */
+
+    /**
+     * Evaluation Module.
+     * @typedef {Object} EvaluationModule
+     * @property {Function} evaluate(solution, problem)
+     */
+
+    /**
+     * Population
+     * @typedef {Array<Solution>} Population
+     */
+
+    /**
+     * Logger
+     * @typedef {Object} Logger
+     * @property {Function} log(message)
+     */
 
     // -------------------------------------------------------------------------
 
@@ -31,21 +55,21 @@ var Genetic = (function () {
 
     /**
      * Sets the current problem.
-     * @param {problem} problem
+     * @param {Problem} problem
      */
     EvaluationModule.prototype.setProblem = function (problem) {
         this.problem = problem;
     };
 
-TODO JSDOC
-    /*
-        Evaluates the quality of a solution.
-        If any constraint is violated -1 is returned,
-        otherwise a non-negative integer.
-        @solution
-        @return the evaluated value. -1 if constraints are violated, else a
-                value >= 0.
-    */
+
+    /**
+     * Evaluates the quality of a solution.
+     * If any constraint is violated -1 is returned,
+     * otherwise a non-negative integer.
+     * @param {Solution} solution
+     * @returns {Number} the evaluated value. -1 if constraints are violated, else a
+     * value >= 0.
+     */
     EvaluationModule.prototype.evaluate = function (solution) {
         var totalProfit = 0;
 
@@ -63,21 +87,20 @@ TODO JSDOC
         return totalProfit;
     };
 
-    /*
-        Checks if any constraint is violated or not.
-        @solution
-        @problem
-        @return true if constraints are met, else false
-    */
+    /**
+     * Checks if any constraint is violated or not.
+     * @param {Solution} solution
+     * @returns {Boolean} true if constraints are met, else false
+     */
     EvaluationModule.prototype.checkConstraints = function (solution) {
-        var totalWeight, constraintWeights, constraintMet, bagLimit;
+        var totalWeight, constraint, constraintMet, bagLimit;
 
         constraintMet = true;
 
         for (var c = 0; c < this.problem.constraints.length; c++) {
-            constraintWeights = this.problem.constraints[c].weights;
+            constraint = this.problem.constraints[c];
             bagLimit = this.problem.constraints[c].bagLimit;
-            totalWeight = this.getWeight(solution, constraintWeights);
+            totalWeight = this.getWeight(solution, constraint);
             if (totalWeight > bagLimit) {
                 constraintMet = false;
                 break;
@@ -87,18 +110,18 @@ TODO JSDOC
         return constraintMet;
     };
 
-    /*
-        returns the weight of a solution based on the constraints.
-        @solution
-        @constraint [] of weights
-        @return the total weight of the solution.
-    */
+    /**
+     * Returns the weight of a solution based on the constraints.
+     * @param {Solution} solution
+     * @param {Constraint} constraint
+     * @return {Number} the total weight of the solution.
+     */
     EvaluationModule.prototype.getWeight = function (solution, constraint) {
         var weight = 0;
 
         for (var i = 0; i < solution.length; i++) {
             if (solution[i] === 1) {
-                weight += constraint[i];
+                weight += constraint.weights[i];
             }
         }
 
@@ -107,24 +130,25 @@ TODO JSDOC
 
     // -------------------------------------------------------------------------
 
-    /*
-        Population Module.
-        Maintains the population.
-        - initialization
-        - population size
-        - replacement of members by given members
-
-        @populationSize The number of solutions per population.
-    */
+    /**
+     * Population Module.
+     * Maintains the population.
+     * - initialization
+     * - population size
+     * - replacement of members by given members
+     *
+     * @constructor
+     * @param {Number} populationSize The number of solutions per population.
+     */
     function PopulationModule(populationSize) {
         this.size = populationSize;
         this.evaluation = new EvaluationModule();
     }
 
-    /*
-        creates an initial population with solutions and returns it.
-        @return a population with solutions [ [0, 1, ..], [1, 1, ..], .. ]
-    */
+    /**
+     * Creates an initial population with solutions and returns it.
+     * @returns {Population}
+     */
     PopulationModule.prototype.createInitial = function () {
         // TODO
         return [[1, 1, 1, 1, 1, 1]];
@@ -132,34 +156,34 @@ TODO JSDOC
 
     // -------------------------------------------------------------------------
 
-    /*
-        Reproduction Module.
-        - parent selection
-        - fitness techniques
-        - crossover
-        - mutation
-
-        @evaluationModule The eval module to use. must have a
-                            evaluate(solution, problem) function.
-    */
+    /**
+     * Reproduction Module.
+     * - parent selection
+     * - fitness techniques
+     * - crossover
+     * - mutation
+     *
+     * @constructor
+     * @param {EvaluationModule} evaluationModule The eval module to use.
+     */
     function ReproductionModule(evaluationModule) {
         this.evaluationModule = evaluationModule;
     }
 
-    /*
-        fitness-is-evaluation.
-        @solution must be [0, 1, ..] for choosing the items to pack.
-        @return -1 if constraints violated else >= 0
+    /**
+     * fitness-is-evaluation.
+     * @param {Solution} solution
+     * @returns {Number} -1 if constraints violated else >= 0
     */
     ReproductionModule.prototype.getFitness = function (solution) {
         return this.evaluationModule.evaluate(solution);
     };
 
-    /*
-        Survival of the fittest! Returns the fittest solution in a population.
-        @population [] of solutions: [ [0, 1, ..], [1, 1, ..], .. ]
-        @return the fittest solution or an empty solution []
-    */
+    /**
+     * Survival of the fittest! Returns the fittest solution in a population.
+     * @param {Population} population
+     * @returns {Solution} the fittest solution or an empty solution
+     */
     ReproductionModule.prototype.getFittestSolution = function (population) {
         var highestFitness = -1,
             fittestSolution = [],
@@ -177,12 +201,11 @@ TODO JSDOC
         return fittestSolution;
     };
 
-    /*
-        Returns the offspring generation
-        @population [] of solutions: [ [0, 1, ..], [1, 1, ..], .. ]
-        @return the new next population same size but with the offsprings of the
-                given population.
-    */
+    /**
+     * Returns the offspring generation
+     * @param {Population} population
+     * @returns {Population} the next generation of a population
+     */
     ReproductionModule.prototype.generateOffspringPopulation = function (population) {
         // TODO
         return population;
@@ -191,9 +214,12 @@ TODO JSDOC
     // -------------------------------------------------------------------------
 
 
-    /*
-        controls the three modules and their interaction.
-    */
+    /**
+     * Controls the three modules and their interaction.
+     * @constructor
+     * @param {Object} params
+     * @param {Logger} logger
+     */
     function Genetic(params, logger) {
         this.params = $.extend({}, params);
         this.logger = logger;
@@ -204,28 +230,29 @@ TODO JSDOC
         this.reproductionModule = new ReproductionModule(this.evaluationModule);
     }
 
-    /*
-        solves the given single problem and stops the time.
-    */
+    /**
+     * Solves the given single problem and stops the time.
+     * @param {Problem} problem
+     */
     Genetic.prototype.solve = function (problem) {
         this.stopwatch.start('total');
 
         this.problem = problem;
 
         this.initModules();
-        this.startSolving();
+        this.solveProblemInternal();
 
         var totalTime = this.stopwatch.stop('total');
         this.logger.log('total time: {} ms', totalTime);
     };
 
-    // initializes the modules
+    /** initializes the modules */
     Genetic.prototype.initModules = function () {
         this.evaluationModule.setProblem(this.problem);
     };
 
-    // the main solving controller
-    Genetic.prototype.startSolving = function () {
+    /** the main solving controller */
+    Genetic.prototype.solveProblemInternal = function () {
         var population;
 
         population = this.populationModule.createInitial();
@@ -248,7 +275,7 @@ TODO JSDOC
     Genetic.prototype.logSeparator = function () {
         this.logger.log("---------------------");
     };
-// TODO !!!!!!!!!!!!!!!!!!!!!!!!!! pass in logger to capture plot data..
+
     return Genetic;
 
 }());
