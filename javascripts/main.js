@@ -37,8 +37,6 @@ $(document).ready(function () {
 
         $container.append('<p>' + JSON.stringify(params, null, 2) + '</p>');
         $container.append($('<div class="graph"></div>'));
-        console.log($container);
-        console.log($plotElem);
 
         var $plotElem = $container.find('.graph');
 

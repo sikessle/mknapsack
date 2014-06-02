@@ -208,7 +208,7 @@ var Genetic = (function () {
 
     /**
      * Replaces the worst solution from the population with all from the
-     * offspring population.
+     * offspring population. Replaces at maximum population.length solutions.
      * @param {Population} population The population to modify.
      * @param {Array<Number>} fitnesses the fitness values of the population
      * @param {Population} offsprings The offsprings which will take
@@ -216,7 +216,13 @@ var Genetic = (function () {
      */
     PopulationModule.prototype.replaceWorst = function (population, fitnesses, offsprings) {
         var n = offsprings.length;
+        var r;
         var mapping = [];
+
+        while (offsprings.length > population.length) {
+            r = Math.floor(Math.random() * offsprings.length);
+            delete offsprings[r];
+        }
 
         for (var i = 0; i < fitnesses.length; i++) {
             mapping.push({
@@ -235,6 +241,9 @@ var Genetic = (function () {
             }
             return 0;
         });
+
+
+
     };
 
     // -------------------------------------------------------------------------
