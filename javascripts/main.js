@@ -35,7 +35,7 @@ $(document).ready(function () {
         params += "problem: " + problemIndex;
         params += " &bull; variables: " + problems[problemIndex].profits.length;
         params += " &bull; result: " + bestQuality;
-        params += " &bull; optimal: " + problems[problemIndex].optimal;
+        params += " (optimal: " + problems[problemIndex].optimal + ")";
         params += " &bull; generations: " + geneticParams.generationsLimit;
         params += " &bull; population: " + geneticParams.populationSize;
         params += " &bull; mutation: " + geneticParams.mutateProbability;
