@@ -36,7 +36,19 @@ $(document).ready(function () {
 
         genetic = new Genetic(geneticParams, geneticLogger);
         genetic.solve(problems[problemIndex], function (plotData) {
-            $.plot($("#graph-1"), [plotData]);
+
+
+            var best = {
+                data: plotData.best,
+                label: "fittest solution"
+            };
+
+            var average = {
+                data: plotData.average,
+                label: "average fitness of population"
+            };
+
+            $.plot($("#graph-1"), [best, average]);
             $('.results .nav-tabs a[href="#plot-1"]').tab('show');
         });
     });

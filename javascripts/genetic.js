@@ -427,7 +427,7 @@ var Genetic = (function () {
         this.logger = logger;
         this.stopwatch = new Stopwatch();
         this.problem = {};
-        this.plotData = [];
+        this.plotData = {};
         this.evaluationModule = new EvaluationModule();
         this.populationModule = new PopulationModule(params.populationSize,
             this.evaluationModule);
@@ -444,9 +444,15 @@ var Genetic = (function () {
         this.problem = problem;
         this.onFinished = callback;
 
-        this.plotData = [];
+        this.initPlotObject();
         this.initModules();
         this.solveProblemInternal();
+    };
+
+    Genetic.prototype.initPlotObject = function () {
+        this.plotData = {};
+        this.plotData.best = [];
+        this.plotData.average = [];
     };
 
     /** initializes the modules */
@@ -490,12 +496,19 @@ var Genetic = (function () {
 
     /** stores plotting data */
     Genetic.prototype.storePlotData = function (generation, population) {
+        var totalFitness = 0;
+        for (var i = 0; i < population.length; i++) {
+            totalFitness += this.reproductionModule.getFitness(population[i]);
+        }
+        var averageFitness = totalFitness/population.length;
+        this.plotData.average.push([generation, averageFitness]);
+
         var bestSolution = this.reproductionModule.getFittestSolution(population);
-        var quality = this.evaluationModule.evaluate(bestSolution);
-        this.plotData.push([generation, quality]);
+        var bestFitness = this.reproductionModule.getFitness(bestSolution);
+        this.plotData.best.push([generation, bestFitness]);
     };
 
-    /**
+    /** TODO ONLY REPLACE N SOLUTIONS!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      * Returns the offspring generation
      * @param {Population} population
      * @returns {Population} the next generation of a population
