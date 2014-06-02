@@ -223,6 +223,7 @@ var Genetic = (function () {
         while (offsprings.length > population.length) {
             r = Math.floor(Math.random() * offsprings.length);
             delete offsprings[r];
+            console.log("offspring length: " + offsprings.length);
         }
 
         for (var i = 0; i < fitnesses.length; i++) {
@@ -433,22 +434,14 @@ var Genetic = (function () {
 
     /**
      * Mutates with a given probability the solution at one position.
-     * Only accepts good mutation which improve the fitness.
      * @param {Solution} solution the solution to mutate
      */
     ReproductionModule.prototype.mutate = function (solution) {
         var r = Math.random();
-        var oldFitness = this.getFitness(solution);
 
         if (this.isProbable(this.mutateProbability)) {
             var pos = Math.floor(Math.random() * solution.length);
             solution[pos] = 1 - solution[pos];
-            var newFitness = this.getFitness(solution);
-            // bad mutation
-            if (newFitness < oldFitness) {
-                // revert mutation
-                solution[pos] = 1 - solution[pos];
-            }
         }
     };
 
