@@ -520,24 +520,24 @@ var Genetic = (function () {
         this.plotData.average.push([gen, averageFitness]);
     };
 
-    /** TODO ONLY REPLACE N SOLUTIONS!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     * Replaces the current population with its offsprings
+    /**
+     * Replaces the current population with some offsprings
      */
     Genetic.prototype.generateOffspringPopulation = function () {
         var offspringPopulation = [];
         var probabilites = [];
-        var repro = this.reproductionModule;
+        var reproduction = this.reproductionModule;
         var mutatedChild, parents, children;
 
-        probabilites = repro.computeProbabilites(this.currentPopulation);
-
+        probabilites = reproduction.computeProbabilites(this.currentPopulation);
+        // TODO ONLY REPLACE N SOLUTIONS!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         while (offspringPopulation.length < this.currentPopulation.length) {
-            parents = repro.getParents(this.currentPopulation, probabilites);
-            children = repro.getOffsprings(parents);
+            parents = reproduction.getParents(this.currentPopulation, probabilites);
+            children = reproduction.getOffsprings(parents);
 
             var i = 0;
             while (i < children.length && offspringPopulation.length < this.currentPopulation.length) {
-                repro.mutate(children[i]);
+                reproduction.mutate(children[i]);
                 if (this.populationModule.isValidAndNotDouble(children[i],
                         offspringPopulation)) {
                     offspringPopulation.push(children[i]);

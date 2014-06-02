@@ -85,7 +85,8 @@ $(document).ready(function () {
             mutateProbability: parseFloat($('#mutateProbability').val()),
             crossoverProbability: parseFloat($('#crossoverProbability').val()),
             generationsLimit: parseInt($('#generationsLimit').val()),
-            populationSize: parseInt($('#populationSize').val())
+            populationSize: parseInt($('#populationSize').val()),
+            offspringsProportion: parseInt($('#offspringsProportion').val())
         };
 
         genetic = new Genetic(geneticParams, geneticLogger);
