@@ -510,7 +510,7 @@ var Genetic = (function () {
     };
 
     Genetic.prototype.stepAndEnqueue = function () {
-        this.logger.log("generation {}", this.generationCounter);
+        this.logCurrentPopulation();
 
         this.storePlotData();
 
@@ -520,6 +520,14 @@ var Genetic = (function () {
             this.generateOffspringPopulation();
             setTimeout(this.stepAndEnqueue.bind(this), this.params.delay);
         }
+    };
+
+    Genetic.prototype.logCurrentPopulation = function () {
+        var best = this.reproductionModule.getFittestSolution(this.currentPopulation);
+        var quality = this.evaluationModule.evaluate(best);
+
+        this.logger.log("generation {}: best-quality: {}",
+            this.generationCounter, quality);
     };
 
     Genetic.prototype.isGenerationLimitReached = function () {
