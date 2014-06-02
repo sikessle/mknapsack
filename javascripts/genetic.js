@@ -496,7 +496,7 @@ var Genetic = (function () {
 
         this.logger.log('total time: {} ms', totalTime);
 
-        this.onFinished(this.plotData);
+        this.onFinished(this.plotData, quality);
     };
 
     /** stores plotting data */
