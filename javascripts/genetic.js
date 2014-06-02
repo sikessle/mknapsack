@@ -206,6 +206,37 @@ var Genetic = (function () {
         return this.evaluation.evaluate(solution) >= 0 && !isDouble;
     };
 
+    /**
+     * Replaces the worst solution from the population with all from the
+     * offspring population.
+     * @param {Population} population The population to modify.
+     * @param {Array<Number>} fitnesses the fitness values of the population
+     * @param {Population} offsprings The offsprings which will take
+     *                     the place from the worst ones in the population.
+     */
+    PopulationModule.prototype.replaceWorst = function (population, fitnesses, offsprings) {
+        var n = offsprings.length;
+        var mapping = [];
+
+        for (var i = 0; i < fitnesses.length; i++) {
+            mapping.push({
+                index: i,
+                fitness: fitnesses[i]
+            });
+        }
+
+        // sort by worst fitness
+        mapping.sort(function (a, b) {
+            if (fitnesses[a.index] < fitnesses[b.index]) {
+                return -1;
+            }
+            if (fitnesses[a.index] > fitnesses[b.index]) {
+                return 1;
+            }
+            return 0;
+        });
+    };
+
     // -------------------------------------------------------------------------
 
     /**
@@ -526,30 +557,61 @@ var Genetic = (function () {
      * Replaces the current population with some offsprings
      */
     Genetic.prototype.generateOffspringPopulation = function () {
-        var offspringPopulation = [];
-        var probabilites = [];
-        var reproduction = this.reproductionModule;
-        var mutatedChild, parents, children;
+        var offspringPopulation = [],
+            probabilites = [],
+            fitnesses = [],
+            reproduction = this.reproductionModule,
+            parents,
+            children,
+            offspringsLimit;
 
+        offspringsLimit = this.params.offspringsProportion * this.params.populationSize;
         probabilites = reproduction.computeProbabilites(this.currentPopulation);
-        // TODO ONLY REPLACE N SOLUTIONS!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        while (offspringPopulation.length < this.currentPopulation.length) {
+
+        while (offspringPopulation.length < offspringsLimit) {
             parents = reproduction.getParents(this.currentPopulation, probabilites);
             children = reproduction.getOffsprings(parents);
 
-            var i = 0;
-            while (i < children.length && offspringPopulation.length < this.currentPopulation.length) {
-                reproduction.mutate(children[i]);
-                if (this.populationModule.isValidAndNotDouble(children[i],
-                        offspringPopulation)) {
-                    offspringPopulation.push(children[i]);
-                }
-                i++;
-            }
+            this.insertChildren(children, offspringPopulation);
         }
 
-        this.currentPopulation = offspringPopulation;
+        fitnesses = this.getFitnessValuesOfCurrentPopulation();
+
+        this.populationModule.replaceWorst(this.currentPopulation,
+            fitnesses, offspringPopulation);
         this.generationCounter++;
+    };
+
+
+
+    /**
+     * Computes the fitness values of each solution in the current population.
+     * @returns {Array<Number>} The fitness values of the population
+     */
+    Genetic.prototype.getFitnessValuesOfCurrentPopulation = function () {
+        var pop = this.currentPopulation;
+        var result = [];
+
+        for (var i = 0; i < pop.length; i++) {
+            result.push(this.reproductionModule.getFitness(pop[i]));
+        }
+
+        return result;
+    };
+
+    /**
+     * Inserts the children into the offsprings population
+     * @param {Array<Solution>} children
+     * @param {Population} offspringPopulation
+     */
+    Genetic.prototype.insertChildren = function (children, offspringPopulation) {
+        var pop = this.populationModule;
+
+        for (var i = 0; i < children.length; i++) {
+            if (pop.isValidAndNotDouble(children[i], offspringPopulation)) {
+                offspringPopulation.push(children[i]);
+            }
+        }
     };
 
     return Genetic;
