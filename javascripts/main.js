@@ -30,12 +30,19 @@ $(document).ready(function () {
         $('.results .tab-content').append('<div class="tab-pane fade" id="plot-' + graphCounter + '"></div>');
 
         var $container = $(containerId);
-        var params = {};
-        params.problemId = problemIndex;
-        params.bestQuality = bestQuality;
-        params = $.extend(params, geneticParams);
+        var params = "";
 
-        $container.append('<p>' + JSON.stringify(params, null, 2) + '</p>');
+        params += "problem: " + problemIndex;
+        params += " - variables: " + problems[problemIndex].profits.length;
+        params += " - result: " + bestQuality;
+        params += " - optimal: " + problems[problemIndex].optimal;
+        params += " - generations: " + geneticParams.generationsLimit;
+        params += " - population: " + geneticParams.populationSize;
+        params += " - mutation: " + geneticParams.mutateProbability;
+        params += " - crossover: " + geneticParams.crossoverProbability;
+        params += " - offsprings: " + geneticParams.offspringsProportion;
+
+        $container.append('<p>' + params + '</p>');
         $container.append($('<div class="graph"></div>'));
 
         var $plotElem = $container.find('.graph');
