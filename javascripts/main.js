@@ -79,7 +79,7 @@ $(document).ready(function () {
         problemIndex = parseInt($('#problemIndex').val());
 
         geneticParams = {
-            delay: 0,
+            delay: 5,
             mutateProbability: parseFloat($('#mutateProbability').val()),
             crossoverProbability: parseFloat($('#crossoverProbability').val()),
             generationsLimit: parseInt($('#generationsLimit').val()),
