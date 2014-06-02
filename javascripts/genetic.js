@@ -419,15 +419,12 @@ var Genetic = (function () {
      * @param {Number} params.crossoverProbability between 0 and 1
      * @param {Number} params.populationSize
      * @param {Number} params.generationsLimit
-     * @param {EvaluationModule} params.evaluationModule
      * @param {Logger} logger
      */
     function Genetic(params, logger) {
         this.params = $.extend({}, params);
         this.logger = logger;
         this.stopwatch = new Stopwatch();
-        this.problem = {};
-        this.plotData = {};
         this.evaluationModule = new EvaluationModule();
         this.populationModule = new PopulationModule(params.populationSize,
             this.evaluationModule);
@@ -443,9 +440,12 @@ var Genetic = (function () {
     Genetic.prototype.solve = function (problem, callback) {
         this.problem = problem;
         this.onFinished = callback;
+        this.currentPopulation = [];
+        this.generationCounter = 0;
 
         this.initPlotObject();
         this.initModules();
+
         this.solveProblemInternal();
     };
 
@@ -462,71 +462,81 @@ var Genetic = (function () {
 
     /** the main solving controller */
     Genetic.prototype.solveProblemInternal = function () {
-        var population, self = this, gen = 0;
+        var populationSize = this.problem.profits.length;
 
-        self.stopwatch.start('total');
+        this.stopwatch.start('total');
+        this.currentPopulation = this.populationModule.createInitial(populationSize);
+        this.stepAndEnqueue();
+    };
 
-        population = this.populationModule.createInitial(this.problem.profits.length);
+    Genetic.prototype.stepAndEnqueue = function () {
+        this.logger.log("generation {}", this.generationCounter);
 
-        function generateOffspringsController() {
+        this.storePlotData();
 
-            self.storePlotData(gen, population);
-
-            if (gen === self.params.generationsLimit) {
-                var bestSolution = self.reproductionModule.getFittestSolution(population);
-                var quality = self.evaluationModule.evaluate(bestSolution);
-                self.logger.log("total best solution with profit {} is {} (optimal: {})",
-                    quality, bestSolution, self.problem.optimal);
-                var totalTime = self.stopwatch.stop('total');
-                self.logger.log('total time: {} ms', totalTime);
-                self.onFinished(self.plotData);
-                return;
-            }
-
-            self.logger.log("generation {}", gen);
-
-            population = self.generateOffspringPopulation(population);
-            gen++;
-
-            setTimeout(generateOffspringsController, self.params.delay);
+        if (this.isGenerationLimitReached()) {
+            this.analyzeBestSolution();
+        } else {
+            this.generateOffspringPopulation();
+            setTimeout(this.stepAndEnqueue.bind(this), this.params.delay);
         }
+    };
 
-        generateOffspringsController();
+    Genetic.prototype.isGenerationLimitReached = function () {
+        return this.generationCounter === this.params.generationsLimit;
+    };
+
+    Genetic.prototype.analyzeBestSolution = function () {
+        var best = this.reproductionModule.getFittestSolution(this.currentPopulation);
+        var quality = this.evaluationModule.evaluate(best);
+        var totalTime = this.stopwatch.stop('total');
+
+        this.logger.log("total best solution with profit {} is {} (optimal: {})",
+            quality, best, this.problem.optimal);
+
+        this.logger.log('total time: {} ms', totalTime);
+
+        this.onFinished(this.plotData);
     };
 
     /** stores plotting data */
-    Genetic.prototype.storePlotData = function (generation, population) {
+    Genetic.prototype.storePlotData = function () {
+        var gen = this.generationCounter;
+        var pop = this.currentPopulation;
         var totalFitness = 0;
-        for (var i = 0; i < population.length; i++) {
-            totalFitness += this.reproductionModule.getFitness(population[i]);
-        }
-        var averageFitness = totalFitness/population.length;
-        this.plotData.average.push([generation, averageFitness]);
+        var averageFitness;
+        var bestFitness;
+        var bestSolution;
 
-        var bestSolution = this.reproductionModule.getFittestSolution(population);
-        var bestFitness = this.reproductionModule.getFitness(bestSolution);
-        this.plotData.best.push([generation, bestFitness]);
+        for (var i = 0; i < pop.length; i++) {
+            totalFitness += this.reproductionModule.getFitness(pop[i]);
+        }
+        averageFitness = totalFitness/pop.length;
+
+        bestSolution = this.reproductionModule.getFittestSolution(pop);
+        bestFitness = this.reproductionModule.getFitness(bestSolution);
+
+        this.plotData.best.push([gen, bestFitness]);
+        this.plotData.average.push([gen, averageFitness]);
     };
 
     /** TODO ONLY REPLACE N SOLUTIONS!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     * Returns the offspring generation
-     * @param {Population} population
-     * @returns {Population} the next generation of a population
+     * Replaces the current population with its offsprings
      */
-    Genetic.prototype.generateOffspringPopulation = function (population) {
+    Genetic.prototype.generateOffspringPopulation = function () {
         var offspringPopulation = [];
         var probabilites = [];
         var repro = this.reproductionModule;
         var mutatedChild, parents, children;
 
-        probabilites = repro.computeProbabilites(population);
+        probabilites = repro.computeProbabilites(this.currentPopulation);
 
-        while (offspringPopulation.length < population.length) {
-            parents = repro.getParents(population, probabilites);
+        while (offspringPopulation.length < this.currentPopulation.length) {
+            parents = repro.getParents(this.currentPopulation, probabilites);
             children = repro.getOffsprings(parents);
 
             var i = 0;
-            while (i < children.length && offspringPopulation.length < population.length) {
+            while (i < children.length && offspringPopulation.length < this.currentPopulation.length) {
                 repro.mutate(children[i]);
                 if (this.populationModule.isValidAndNotDouble(children[i],
                         offspringPopulation)) {
@@ -536,7 +546,8 @@ var Genetic = (function () {
             }
         }
 
-        return offspringPopulation;
+        this.currentPopulation = offspringPopulation;
+        this.generationCounter++;
     };
 
     return Genetic;

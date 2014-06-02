@@ -37,7 +37,6 @@ $(document).ready(function () {
         genetic = new Genetic(geneticParams, geneticLogger);
         genetic.solve(problems[problemIndex], function (plotData) {
 
-
             var best = {
                 data: plotData.best,
                 label: "fittest solution"
@@ -47,7 +46,7 @@ $(document).ready(function () {
                 data: plotData.average,
                 label: "average fitness of population"
             };
-
+            $('#graph-1').width($('#graph-1').parent().innerWidth());
             $.plot($("#graph-1"), [best, average]);
             $('.results .nav-tabs a[href="#plot-1"]').tab('show');
         });
