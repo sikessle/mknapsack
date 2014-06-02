@@ -219,6 +219,7 @@ var Genetic = (function () {
         var r;
         var mapping = [];
 
+        // ensure offsprings does not contain more than population members
         while (offsprings.length > population.length) {
             r = Math.floor(Math.random() * offsprings.length);
             delete offsprings[r];
@@ -242,7 +243,11 @@ var Genetic = (function () {
             return 0;
         });
 
-
+        mapping.forEach(function (entry, i) {
+            if (i < offsprings.length) {
+                population[entry.index] = offsprings[i].slice(0);
+            }
+        });
 
     };
 
