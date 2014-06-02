@@ -331,7 +331,7 @@ var Genetic = (function () {
     };
 
     /**
-     * Returns two parents based on the given probabilites.
+     * Returns two parents based on the given probabilites (roulette wheel)
      * @param {Population} population
      * @param {Array<Number>} probabilites
      * @returns {Array<Solution>} two unique parents
