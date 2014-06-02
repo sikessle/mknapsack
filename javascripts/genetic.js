@@ -216,14 +216,16 @@ var Genetic = (function () {
      */
     PopulationModule.prototype.replaceWorst = function (population, fitnesses, offsprings) {
         var n = offsprings.length;
-        var r;
-        var mapping = [];
+        var mapping = [],
+        sanitizedOffsprings = [];
 
         // ensure offsprings does not contain more than population members
-        while (offsprings.length > population.length) {
-            r = Math.floor(Math.random() * offsprings.length);
-            delete offsprings[r];
-            console.log("offspring length: " + offsprings.length);
+        if (offsprings.length > population.length) {
+            for (var j = 0; j < population.length; j++) {
+                sanitizedOffsprings[j] = offsprings[j];
+            }
+        } else {
+            sanitizedOffsprings = offsprings;
         }
 
         for (var i = 0; i < fitnesses.length; i++) {
@@ -246,7 +248,7 @@ var Genetic = (function () {
 
         mapping.forEach(function (entry, i) {
             if (i < offsprings.length) {
-                population[entry.index] = offsprings[i].slice(0);
+                population[entry.index] = sanitizedOffsprings[i].slice(0);
             }
         });
 
