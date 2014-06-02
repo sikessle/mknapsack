@@ -437,8 +437,6 @@ var Genetic = (function () {
      * @param {Solution} solution the solution to mutate
      */
     ReproductionModule.prototype.mutate = function (solution) {
-        var r = Math.random();
-
         if (this.isProbable(this.mutateProbability)) {
             var pos = Math.floor(Math.random() * solution.length);
             solution[pos] = 1 - solution[pos];
