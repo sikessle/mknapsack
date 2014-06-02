@@ -33,14 +33,14 @@ $(document).ready(function () {
         var params = "";
 
         params += "problem: " + problemIndex;
-        params += " - variables: " + problems[problemIndex].profits.length;
-        params += " - result: " + bestQuality;
-        params += " - optimal: " + problems[problemIndex].optimal;
-        params += " - generations: " + geneticParams.generationsLimit;
-        params += " - population: " + geneticParams.populationSize;
-        params += " - mutation: " + geneticParams.mutateProbability;
-        params += " - crossover: " + geneticParams.crossoverProbability;
-        params += " - offsprings: " + geneticParams.offspringsProportion;
+        params += " &bull; variables: " + problems[problemIndex].profits.length;
+        params += " &bull; result: " + bestQuality;
+        params += " &bull; optimal: " + problems[problemIndex].optimal;
+        params += " &bull; generations: " + geneticParams.generationsLimit;
+        params += " &bull; population: " + geneticParams.populationSize;
+        params += " &bull; mutation: " + geneticParams.mutateProbability;
+        params += " &bull; crossover: " + geneticParams.crossoverProbability;
+        params += " &bull; offsprings: " + geneticParams.offspringsProportion;
 
         $container.append('<p>' + params + '</p>');
         $container.append($('<div class="graph"></div>'));
