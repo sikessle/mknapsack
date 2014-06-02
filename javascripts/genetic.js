@@ -419,6 +419,8 @@ var Genetic = (function () {
      * @param {Number} params.crossoverProbability between 0 and 1
      * @param {Number} params.populationSize
      * @param {Number} params.generationsLimit
+     * @param {Number} params.offspringsProportion proportion (0 to 1) of the population
+     *                 which will be replaced by some offsprings.
      * @param {Logger} logger
      */
     function Genetic(params, logger) {
