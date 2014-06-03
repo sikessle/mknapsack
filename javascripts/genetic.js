@@ -391,15 +391,9 @@ var Genetic = (function () {
      */
     ReproductionModule.prototype.getParents = function (population, probabilites) {
         var parents = [],
-        r, parent, intervals = [], interval, isDouble;
+        r, parent, intervals = [], isDouble;
 
-        // create intervals
-        for (var i = 0; i < probabilites.length; i++) {
-            interval = {};
-            interval.from = i === 0 ? 0 : intervals[i - 1].to;
-            interval.to = interval.from + probabilites[i];
-            intervals.push(interval);
-        }
+        intervals = this.createProbabilityIntervals(probabilites);
 
         while (parents.length < 2) {
             r = Math.random();
@@ -424,7 +418,26 @@ var Genetic = (function () {
         return parents;
     };
 
+    /**
+     * Returns an array of intervals. Each interval consists of a from and a to value.
+     * To use as a roulette wheel selection.
+     * @param {Array<Number>} probabilites
+     * @returns {Array<Object>} Each Object: interval.from and interval.to
+     */
+    ReproductionModule.prototype.createProbabilityIntervals = function (probabilites) {
+        var intervals = [];
+        var interval;
 
+        for (var i = 0; i < probabilites.length; i++) {
+            interval = {};
+            interval.from = i === 0 ? 0 : intervals[i - 1].to;
+            interval.to = interval.from + probabilites[i];
+
+            intervals.push(interval);
+        }
+
+        return intervals;
+    };
 
     /**
      * Checks if the event with the given probability happened.
