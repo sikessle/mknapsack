@@ -256,8 +256,10 @@ var Genetic = (function () {
         // sort by worst fitness
         mapping.sort(this.createSortWorstFitnessFirst(fitnesses));
 
+        // replace the population solutions by their offsprings, beginning with
+        // the worst solution and stop when no more offsprings are available.
         mapping.forEach(function (entry, i) {
-            if (i < offsprings.length) {
+            if (i < sanitizedOffsprings.length) {
                 population[entry.index] = sanitizedOffsprings[i].slice(0);
             }
         });
