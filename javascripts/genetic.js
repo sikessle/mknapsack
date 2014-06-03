@@ -238,19 +238,14 @@ var Genetic = (function () {
      *                     the place from the worst ones in the population.
      */
     PopulationModule.prototype.replaceWorst = function (population, fitnesses, offsprings) {
-        var n = offsprings.length;
-        var mapping = [],
+        var n = offsprings.length,
+        mapping = [],
         sanitizedOffsprings = [];
 
-        // ensure offsprings does not contain more than population members
-        if (offsprings.length > population.length) {
-            for (var j = 0; j < population.length; j++) {
-                sanitizedOffsprings[j] = offsprings[j];
-            }
-        } else {
-            sanitizedOffsprings = offsprings;
-        }
+        sanitizedOffsprings = this.copyLimited(offsprings, population.length);
 
+        // create mapping so we can later on sort and still find the original solution
+        // in the population.
         for (var i = 0; i < fitnesses.length; i++) {
             mapping.push({
                 index: i,
@@ -259,15 +254,7 @@ var Genetic = (function () {
         }
 
         // sort by worst fitness
-        mapping.sort(function (a, b) {
-            if (fitnesses[a.index] < fitnesses[b.index]) {
-                return -1;
-            }
-            if (fitnesses[a.index] > fitnesses[b.index]) {
-                return 1;
-            }
-            return 0;
-        });
+        mapping.sort(this.createSortWorstFitnessFirst(fitnesses));
 
         mapping.forEach(function (entry, i) {
             if (i < offsprings.length) {
@@ -275,6 +262,45 @@ var Genetic = (function () {
             }
         });
 
+    };
+
+    /**
+     * Returns a new function which can sort by fitness.
+     * Sorts by worst fitness first. To use in Array.sort(..).
+     * The a, b parameters must have a .index property which correspondens
+     * to the fitness array.
+     */
+    PopulationModule.prototype.createSortWorstFitnessFirst = function (fitnesses) {
+        return function (a, b) {
+            if (fitnesses[a.index] < fitnesses[b.index]) {
+                return -1;
+            }
+            if (fitnesses[a.index] > fitnesses[b.index]) {
+                return 1;
+            }
+            return 0;
+        };
+    };
+
+    /**
+     * Returns a new population with only max solutions from the source.
+     * @param {Population} sourcePopulation The population to copy.
+     * @param {Number} max maximum number of solutions to copy from source
+     * @returns {Population} a new population with max members from source.
+     *                       WARNING: Copys only the references, NO real copy.
+     */
+    PopulationModule.prototype.copyLimited = function (sourcePopulation, max) {
+        var result = [];
+
+        if (sourcePopulation.length <= max) {
+            return sourcePopulation;
+        }
+
+        for (var i = 0; i < max; i++) {
+            result[i] = sourcePopulation[i];
+        }
+
+        return result;
     };
 
     // -------------------------------------------------------------------------
