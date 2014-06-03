@@ -57,6 +57,7 @@ $(document).ready(function () {
                 hoverable: true
             },
             yaxis: {
+                max: problems[problemIndex].optimal * 1.05,
                 tickColor: "#3c763d",
                 ticks: [[problems[problemIndex].optimal, "optimal"]]
             }
