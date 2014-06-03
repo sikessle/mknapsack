@@ -316,11 +316,13 @@ var Genetic = (function () {
      *
      * @constructor
      * @param {EvaluationModule} evaluationModule The eval module to use.
+     * @param {PopulationModule} populationModule The population module to use.
      * @param {Number} mutateProbability The probability of a mutation (0 to 1)
      * @param {Number} crossoverProbability The probability of a crossover (0 to 1)
      */
-    function ReproductionModule(evaluationModule, mutateProbability, crossoverProbability) {
+    function ReproductionModule(evaluationModule, populationModule, mutateProbability, crossoverProbability) {
         this.evaluationModule = evaluationModule;
+        this.populationModule = populationModule;
         this.mutateProbability = mutateProbability;
         this.crossoverProbability = crossoverProbability;
     }
@@ -399,18 +401,7 @@ var Genetic = (function () {
             r = Math.random();
             parent = this.getSolutionByProbability(population, intervals, r);
 
-            if (parents.length === 1) {
-                isDouble = true;
-                for (var s = 0; s < parents[0].length; s++) {
-                    if (parent[s] !== parents[0][s]) {
-                        isDouble = false;
-                    }
-                }
-            } else {
-                isDouble = false;
-            }
-
-            if (!isDouble) {
+            if (this.populationModule.isNotDouble(parent, parents)) {
                 parents.push(parent);
             }
         }
@@ -533,7 +524,7 @@ var Genetic = (function () {
         this.populationModule = new PopulationModule(params.populationSize,
             this.evaluationModule);
         this.reproductionModule = new ReproductionModule(this.evaluationModule,
-            params.mutateProbability, params.crossoverProbability);
+            this.populationModule, params.mutateProbability, params.crossoverProbability);
     }
 
     /**
