@@ -70,6 +70,9 @@ $(document).ready(function () {
             },
             grid: {
                 hoverable: true,
+            },
+            legend: {
+                position: "se"
             }
         });
 
