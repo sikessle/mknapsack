@@ -24,6 +24,15 @@ $(document).ready(function () {
             label: "average fitness of population"
         };
 
+        var optimal = {
+            data: [
+                [0, problems[problemIndex].optimal],
+                [geneticParams.generationsLimit, problems[problemIndex].optimal]
+            ],
+            label: "optimal solution",
+            color: "#3c763d"
+        };
+
         var containerId = '#plot-' + graphCounter;
 
         $('.results .nav-tabs').append('<li><a href="' + containerId + '" data-toggle="tab">Plot ' + graphCounter + '</a></li>');
@@ -49,17 +58,15 @@ $(document).ready(function () {
 
         $plotElem.width($('.results .tab-content').width());
 
-        $.plot($plotElem, [best, average], {
+        $.plot($plotElem, [best, average, optimal], {
             series: {
                 lines: { lineWidth: 1 }
             },
             grid: {
-                hoverable: true
+                hoverable: true,
             },
             yaxis: {
-                max: problems[problemIndex].optimal * 1.05,
-                tickColor: "#3c763d",
-                ticks: [[problems[problemIndex].optimal, "optimal"]]
+                max: problems[problemIndex].optimal * 1.05
             }
         });
 
