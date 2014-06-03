@@ -70,9 +70,6 @@ $(document).ready(function () {
             },
             grid: {
                 hoverable: true,
-            },
-            yaxis: {
-                max: problems[problemIndex].optimal * 1.05
             }
         });
 
