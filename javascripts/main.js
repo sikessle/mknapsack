@@ -55,6 +55,10 @@ $(document).ready(function () {
             },
             grid: {
                 hoverable: true
+            },
+            yaxis: {
+                tickColor: "#3c763d",
+                ticks: [[problems[problemIndex].optimal, "optimal"]]
             }
         });
 
