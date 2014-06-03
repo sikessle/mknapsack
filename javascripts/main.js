@@ -72,7 +72,7 @@ $(document).ready(function () {
 
         setTimeout(function () {
             $('.results .nav-tabs a[href="' + containerId + '"]').tab('show');
-        }, 100);
+        }, 200);
 
         $('#solve').prop('disabled', false);
 
