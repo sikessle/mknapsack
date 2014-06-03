@@ -1,7 +1,7 @@
 /*
 The mknapsack solver is a web-based javascript tool to solve the knapsack
 problem with a genetic algorithm.
-Copyright (C) {2014}  {Simon Kessler}
+Copyright (C) 2014 Simon Kessler
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by

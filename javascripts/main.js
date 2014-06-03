@@ -1,7 +1,7 @@
 /*
 The mknapsack solver is a web-based javascript tool to solve the knapsack
 problem with a genetic algorithm.
-Copyright (C) {2014}  {Simon Kessler}
+Copyright (C) 2014 Simon Kessler
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -21,7 +21,12 @@ $(document).ready(function () {
 
     var input, parser, problems, genetic, parserLogger,
         geneticLogger, geneticParams, problemIndex,
-        graphCounter = 0;
+        graphCounter = 0, license;
+
+    license = "------------------------------------------------\n";
+    license += "mknapsack solver Copyright (C) 2014 Simon Kessler\n";
+    license += "This program comes with ABSOLUTELY NO WARRANTY\n";
+    license += "------------------------------------------------\n";
 
     parserLogger = new Logger('#parser-log textarea');
     geneticLogger = new Logger('#genetic-log textarea');
@@ -109,12 +114,14 @@ $(document).ready(function () {
         $('.results .panel').removeClass('panel-success').addClass('panel-default');
         input = $('#input textarea').val();
         parserLogger.clear();
+        parserLogger.log(license);
         problems = parser.parse(input);
         $('#solve').prop('disabled', false);
     });
 
     $('#solve').click(function () {
         geneticLogger.clear();
+        geneticLogger.log(license);
         $('#solve').prop('disabled', true);
         $('.results').insertBefore('.parser');
         $('.results .nav-tabs a[href="#genetic-log"]').tab('show');
