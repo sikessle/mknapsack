@@ -159,18 +159,15 @@ var Genetic = (function () {
         while (population.length < this.populationSize) {
             var solution = [];
 
+            // decide for each bit with p=0.5 if it is set or not.
             for (var s = 0; s < solutionSize; s++) {
                 packed = Math.round(Math.random());
                 solution.push(packed);
             }
 
-            // remove item as long as the solution is not valid.
-            while (this.evaluation.evaluate(solution) < 0) {
-                r = Math.floor(Math.random() * solution.length);
-                solution[r] = 0;
-            }
+            this.makeSolutionValid(solution);
 
-            if (this.isValidAndNotDouble(solution, population)) {
+            if (this.isNotDouble(solution, population)) {
                 population.push(solution);
             }
         }
@@ -179,18 +176,30 @@ var Genetic = (function () {
     };
 
     /**
-     * Checks if the given solution is valid (quality >= 0) and not already in the
-     * population (avoid double solutions).
+     * Makes sure that the solution meets the constraints by randomly unpacking
+     * items from it.
+     * @param {Solution} solution the solution to sanitize
+     */
+    PopulationModule.prototype.makeSolutionValid = function (solution) {
+        var r;
+        while (this.evaluation.evaluate(solution) < 0) {
+            r = Math.floor(Math.random() * solution.length);
+            solution[r] = 0;
+        }
+    };
+
+    /**
+     * Checks if the given solution is unique in the given population.
      * @param {Solution} solution The solution to check against the population.
      * @param {Population} population
-     * @returns {Boolean} true if the solution is valid and not twice in the population.
+     * @returns {Boolean} true if the solution is not twice in the population.
      */
-    PopulationModule.prototype.isValidAndNotDouble = function (solution, population) {
-        var isValid = this.evaluation.evaluate(solution) >= 0;
+    PopulationModule.prototype.isNotDouble = function (solution, population) {
         var isDouble = false;
+        var isSame;
 
         for (var s = 0; s < population.length; s++) {
-            var isSame = true;
+            isSame = true;
             for (var i = 0; i < solution.length; i++) {
                 if (population[s][i] != solution[i]) {
                     isSame = false;
@@ -203,7 +212,21 @@ var Genetic = (function () {
             }
         }
 
-        return this.evaluation.evaluate(solution) >= 0 && !isDouble;
+        return !isDouble;
+    };
+
+    /**
+     * Checks if the given solution is valid (quality >= 0) and not already in the
+     * population (avoid double solutions).
+     * @param {Solution} solution The solution to check against the population.
+     * @param {Population} population
+     * @returns {Boolean} true if the solution is valid and not twice in the population.
+     */
+    PopulationModule.prototype.isValidAndNotDouble = function (solution, population) {
+        var isValid = this.evaluation.evaluate(solution) >= 0;
+        var isNotDouble = this.isNotDouble(solution, population);
+
+        return isValid && isNotDouble;
     };
 
     /**
