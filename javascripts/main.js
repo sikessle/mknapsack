@@ -12,15 +12,20 @@ $(document).ready(function () {
     parser = new ORParser(parserLogger);
 
 
-    function createPlot(plotData, bestQuality) {
+    function createPlot(data) {
+        var plotData, bestQuality, computingTime;
+
+        plotData = data.statistics;
+        bestQuality = data.bestQuality;
+        computingTime = data.computingTime;
 
         var best = {
-            data: plotData.best,
+            data: plotData.bestFitness,
             label: "fittest solution"
         };
 
         var average = {
-            data: plotData.average,
+            data: plotData.averageFitness,
             label: "average fitness of population"
         };
 
@@ -45,13 +50,14 @@ $(document).ready(function () {
         params += " &bull; variables: " + problems[problemIndex].profits.length;
         params += " &bull; result: " + bestQuality;
         params += " (optimal: " + problems[problemIndex].optimal + ")";
+        params += " &bull; time: " + computingTime + " ms";
         params += " &bull; generations: " + geneticParams.generationsLimit;
         params += " &bull; population: " + geneticParams.populationSize;
         params += " &bull; mutation: " + geneticParams.mutateProbability;
         params += " &bull; crossover: " + geneticParams.crossoverProbability;
         params += " &bull; offsprings: " + geneticParams.offspringsProportion;
 
-        $container.append('<p>' + params + '</p>');
+        $container.append('<p><small>' + params + '</small></p>');
         $container.append($('<div class="graph"></div>'));
 
         var $plotElem = $container.find('.graph');

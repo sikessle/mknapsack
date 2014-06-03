@@ -538,16 +538,16 @@ var Genetic = (function () {
         this.currentPopulation = [];
         this.generationCounter = 0;
 
-        this.initPlotObject();
+        this.initPopulationStatistics();
         this.initModules();
 
         this.solveProblemInternal();
     };
 
-    Genetic.prototype.initPlotObject = function () {
-        this.plotData = {};
-        this.plotData.best = [];
-        this.plotData.average = [];
+    Genetic.prototype.initPopulationStatistics = function () {
+        this.statistics = {};
+        this.statistics.bestFitness = [];
+        this.statistics.averageFitness = [];
     };
 
     /** initializes the modules */
@@ -567,7 +567,7 @@ var Genetic = (function () {
     Genetic.prototype.stepAndEnqueue = function () {
         this.logCurrentPopulation();
 
-        this.storePlotData();
+        this.storePopulationStatistics();
 
         if (this.isGenerationLimitReached()) {
             this.analyzeBestSolution();
@@ -599,11 +599,15 @@ var Genetic = (function () {
 
         this.logger.log('total time: {} ms', totalTime);
 
-        this.onFinished(this.plotData, quality);
+        this.onFinished({
+            statistics: this.statistics,
+            bestQuality: quality,
+            computingTime: totalTime
+        });
     };
 
-    /** stores plotting data */
-    Genetic.prototype.storePlotData = function () {
+    /** stores statistics */
+    Genetic.prototype.storePopulationStatistics = function () {
         var gen = this.generationCounter;
         var pop = this.currentPopulation;
         var totalFitness = 0;
@@ -619,8 +623,8 @@ var Genetic = (function () {
         bestSolution = this.reproductionModule.getFittestSolution(pop);
         bestFitness = this.reproductionModule.getFitness(bestSolution);
 
-        this.plotData.best.push([gen, bestFitness]);
-        this.plotData.average.push([gen, averageFitness]);
+        this.statistics.bestFitness.push([gen, bestFitness]);
+        this.statistics.averageFitness.push([gen, averageFitness]);
     };
 
     /**
