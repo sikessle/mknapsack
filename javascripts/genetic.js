@@ -480,7 +480,8 @@ var Genetic = (function () {
 
     /**
      * Returns two children of the given two parents by crossover-techniques.
-     * Using uniform crossover with probabilty of 0.5.
+     * Using uniform crossover with probabilty of 0.5. Also applies, if
+     * a crossover was performed, a mutation with a defined probability.
      * @param {Array<Solution>} parents two parents
      * @returns {Array<Solution>} two offsprings
      */
@@ -499,6 +500,9 @@ var Genetic = (function () {
                 c1[i] = parents[parentIndex][i];
                 c2[i] = parents[1 - parentIndex][i];
             }
+
+            this.mutate(c1);
+            this.mutate(c2);
         }
 
         offsprings.push(c1);
@@ -508,7 +512,8 @@ var Genetic = (function () {
     };
 
     /**
-     * Mutates with a given probability the solution at one position.
+     * Mutates with a given probability the solution at one position by flipping
+     * the position (0/1).
      * @param {Solution} solution the solution to mutate
      */
     ReproductionModule.prototype.mutate = function (solution) {
@@ -671,6 +676,7 @@ var Genetic = (function () {
 
         this.populationModule.replaceWorst(this.currentPopulation,
             fitnesses, offspringPopulation);
+
         this.generationCounter++;
     };
 
@@ -692,7 +698,7 @@ var Genetic = (function () {
     };
 
     /**
-     * Inserts the children into the offsprings population
+     * Inserts the not-double and valid children into the offsprings population
      * @param {Array<Solution>} children
      * @param {Population} offspringPopulation
      */
