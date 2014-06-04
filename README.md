@@ -10,7 +10,7 @@ is the OR-library.
 - Run 'bower install'
 - Run 'grunt watch' to recompile on change .less files
 
-## Compatability
+## Compatibility
 The solver should be fairly compatible with all major browser, however
 there is no guarantee. It has been tested with Safari 7 and Firefox 29.
 Some of functions use are ECMAScript 5+. Also it should work with all
@@ -37,16 +37,27 @@ Consists of random valid solutions with packed/unpacked items uniformly
 ### Mutation
 With probability p each new offspring (only if it is true offspring and
 not just a clone, depending on the crossover probability) is mutated.
-Mutation is performed by flipping one bit at a random position in the solution.
+Mutation is performed by flipping one bit at a random position in the
+solution. Bad mutations are also accepted.
+The mutation probability can be parameterized via the frontend.
 
 ### Crossover
+Using uniform-crossover with a probability of 0.5 for each bit.
+First there are two child c1, c2 generated as exact copies from the
+parents p1, p2. With a probability p a crossover is performed.
+For each bit of both children it is decided with a probability of 0.5
+if they get the bit from p1 or p2. Every offspring is accepted, as
+long as it is valid (better or not than the previous).
+The crossover probability can be parameterized via the frontend.
 
 ### Population Replacement
-- initial population consists of random valid solutions with
-packed/unpacked items uniformly distributed along the solution vector.
-- the mutation accepts bad mutations.
-- crossover technique: uniform-crossover with p=0.5
-- population replacement method: replace-worst
+Using replace-worst strategy with a limited replacement proportion n.
+This defines, how many percent of the worst solutions in the current
+population will be replaced by their offsprings. The order of which
+offsprings replace which worst parents is random. They are just
+replaced worst-first in the sequence the offsprings are iterated.
+The offsprings proportion in the new population can be parameterized
+via the frontend.
 
 ## See also
 For information about the benchmark, for which this algorithm is
