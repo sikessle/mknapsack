@@ -1,6 +1,7 @@
 # multidimensional knapsack 0-1 solver
 
-For the course-work in AI2 by Ms. Rong Qu at the University of Applied Science Konstanz. The task was to design and implement a population
+For the course-work in Artificial Intelligence 2 by Ms. Rong Qu at the
+University of Applied Science Konstanz. The task was to design and implement a population
 based algorithm to solve the knapsack problem with multiple constraints.
 The benchmark which was used can be found under "See also" section. It
 is the OR-library.
@@ -13,7 +14,7 @@ is the OR-library.
 ## Compatibility
 The solver should be fairly compatible with all major browser, however
 there is no guarantee. It has been tested with Safari 7 and Firefox 29.
-Some of functions use are ECMAScript 5+. Also it should work with all
+Some of functions used are ECMAScript 5+. Also it should work with all
 modern mobile devices, due to bootstrap 3.
 
 ## Algorithm Details
