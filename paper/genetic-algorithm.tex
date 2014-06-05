@@ -1,0 +1,101 @@
+\documentclass[a4paper]{article}
+
+\usepackage[english]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{graphicx}
+
+\title{Genetic Algorithm for Solving the Multidimensional 0-1 Knapsack Problem}
+
+\author{Simon Kessler \\ Coursework for AI2 at HTWG Konstanz}
+
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+The goal was to design and implement a population based algorithm which is able to solve a multidimensional 0-1 knapsack problem. By using modern web technologies like HTML5 and JavaScript the implemented genetic algorithm is cross-platform compatible and offers easy interpretable graphs of the result. Best results for the benchmark mknapcb1 has been obtained by using an initial random population. The crossover technique used is uniform-crossover with replace-worst strategy. Additional a mutation is applied to each offspring chromosome.
+
+TODO: It has been shown that parameter x,y has a great impact on .... usw.
+
+TODO: Idee von anderem Paper
+\end{abstract}
+
+\section{Introduction}
+
+In this paper the design and implementation of a genetic algorithm which can solve the multidimensional 0-1 knapsack problem is presented. Also a discussion about the impacts of various parameters of the algorithm on the quality and computation time of the obtained solution. To benchmark the algorithm the mknapcb1 file of the OR-Library\footnote{http://people.brunel.ac.uk/~mastjjb/jeb/orlib/mknapinfo.html} is used. Additionally an external paper will be reviewed, to show which modules of the algorithm could be improved by using advanced techniques.
+
+\section{Knapsack Problem}
+The multidimensional 0-1 knapsack problem is a regular knapsack optimization problem with multiple constraints. It is defined as:
+
+\begin{align}
+Max. \sum_{j=1}^n x(j)p(j) \\
+s.t. \sum_{j=1}^n r(i,j)x(j) <= b(i), i = 1..m \\
+x(j) = \{1, 0\}, j = 1..n
+\end{align}
+n = number of variables, m = number of constraints, b(i) := total constraint of the knapsack in dimension i.
+
+In short: optimize the value of the packed knapsack while meeting all constraints by deciding which items are packed in and which not. The function x(j) controls if a item is packed or not. 
+
+\section{Algorithm Design}
+
+Following are the concepts and theoretical ideas of the algorithm outlined.
+
+\subsection{Genetic Algorithm}
+
+The genetic algorithm is a population based approach which showed to be a good general purpose tool. It is also a interesting technique, imitating the evolutionary concept of life. At each step a population P of chromosomes is considered. Some chromosomes will be paired with others to generate an offspring. By mixing parts of the chromosomes a crossover is performed. Additionally some mutation can happen, which also changes a offspring. The fitness of a chromosome is used to compare different chromosomes. The terms chromosome and solution are used exchangeable in the following pages.
+
+\subsection{Problem Representation}
+
+For a genetic algorithm it is favourable to represent the problem as a bit string, i.e. \emph{01001}, whereat each bit represents the state of an item.
+
+\subsection{Modules}
+
+Dividing the algorithm in modules allows to easily swap in and out different strategies for each module. The following modules are used:
+
+\paragraph{Population} 
+
+Maintains the population and is responsible for initializing the population with chromosomes, limiting the population size and ensuring that various constraints are met. 
+
+To allow a good exploration of the search space, it is important to generate a well distributed initial population. Every chromosome of the population should have for every bit the same probability of 0.5 to be packed in or not. Another important parameter is the size of the population. As the problem has \(S = 2^n\), n = number of items, possible solutions, it must be ensured that the population size \emph{PS} meets the constraint \(PS < S\). 
+
+To ensure great diversity a population is not allowed to contain twice the same chromosome. Additionally only valid solutions, that is to say solutions not breaking any constraint \emph{b(i)} are contained in a population at any time. At each generation step some of the old chromosome in the population have to be replaced. By replacing only a number of the worst chromosomes the chance of replacing a very good chromosome is low. This way good solutions are not prematurely replaced. If an offspring is better, they will automatically replace the not so good solutions in the next generations. In literature this strategy is known as \emph{replace-worst}.
+
+\paragraph{Evaluation}
+
+This module has domain knowledge and is able to evaluate a solution. For the knapsack problem the evaluation is straightforward: Sum up the values of each packed item. The total sum is the evaluated value of the solution. If any constraint \emph{b(i)} is broken, a value of -1 is assigned. 
+
+\paragraph{Reproduction}
+
+Takes care of assigning a fitness value to each chromosome. It is also responsible for selecting parents for a crossover as well for performing this crossover. Additionally for applying a mutation to some chromosomes. 
+
+For assigning the fitness value the strategy \emph{fitness-is-evaluation} is used. The selection of the parents is based on their fitness by using the \emph{roulette-wheel} strategy, which favours fitter parents for a crossover. However, there is still a probability that less fit chromosomes are selected. This is important, as less fit chromosomes still may have some very good parts which are needed to obtain an optimal solution. 
+
+By crossing them with a probability p, probably the good part is kept while the bad ones are replaced with a good part of some other chromosome. For the crossover-technique the \emph{uniform-crossover} with a mixing ratio of 0.5 has been chosen, as this strategy also helps to increase the diversity of the population. 
+
+To overcome the problem, that some chromosomes may never be generated by the crossover and to escape local maxima a mutation happens with a certain probability at an offspring. This is, a random bit in the chromosome is flipped.
+
+\section{Implementation}
+
+As it is the goal to compare the algorithm with different parameters, absolute computation speed is not the most relevant criteria  for choosing a programming language. Therefore JavaScript in combination with HTML5 was used. This allows the algorithm to run cross-platform and enables other interested people to easily have a look at the code and play around with the parameters. A parser allows to parse the files of the OR-library. By clicking \emph{parse} and afterwards \emph{solve} the algorithm starts and presents at the end a plot of the fitness over time. The code can be found on GitHub\footnote{http://github.com/sikessle/mknapsack}, where also a URL with a running version is provided\footnote{At the time this paper is written, the code and URL are not online. They will be published at the end of June 2014}. The chromosomes are represented as an array of 0's and 1's. Further details can be found in the supplied README.md file and the commented source code.
+
+All relevant parameters like the number of generations, population size, crossover probability, mutation probability and the number of the worst chromosomes which will be replaced by the offspring, can be easily changed in the user interface. 
+
+\section{Benchmarks}
+
+To see how the design performs, the algorithm will be benchmarked with the \emph{mknapcb1} data set of the OR-library. It contains 30 problems, however only problem \#0 and \#29 are chosen to keep the analysis clear\footnote{The interested reader may benchmark the other problems by using the provided code}.
+
+\subsection{Convergence}
+
+p0 and p29. graphs. 
+
+\subsection{Impact of parameters}
+
+p0 and p29. Table and graphs. fitness. computational time.
+
+
+
+\section{Improvements}
+
+\end{document}
