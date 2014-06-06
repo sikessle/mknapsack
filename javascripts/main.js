@@ -21,7 +21,7 @@ $(document).ready(function () {
 
     var input, parser, problems, genetic, parserLogger,
         geneticLogger, geneticParams, problemIndex,
-        graphCounter = 0, license;
+        graphCounter = 0, license, totalStatistics;
 
     license = "------------------------------------------------\n";
     license += "mknapsack solver Copyright (C) 2014 Simon Kessler\n";
@@ -33,7 +33,15 @@ $(document).ready(function () {
     geneticLogger.setReverse(true);
 
     parser = new ORParser(parserLogger);
-
+    /*
+        contains:
+        {
+            bestFitness: 1,
+            averageFitness: 1,
+            params: {}
+        }
+    */
+    totalStatistics = [];
 
     function createPlot(data) {
         var plotData, bestQuality, computingTime;
@@ -41,6 +49,18 @@ $(document).ready(function () {
         plotData = data.statistics;
         bestQuality = data.bestQuality;
         computingTime = data.computingTime;
+
+        totalStatistics.push({
+            fittestSoltution: bestQuality,
+            computingTime: computingTime,
+            params: {
+                generations: geneticParams.generationsLimit,
+                populationSize: geneticParams.populationSize,
+                mutateProbability: geneticParams.mutateProbability,
+                crossoverProbability: geneticParams.crossoverProbability,
+                offspringsProportion: geneticParams.offspringsProportion,
+            }
+        });
 
         var best = {
             data: plotData.bestFitness,
