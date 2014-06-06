@@ -51,6 +51,7 @@ $(document).ready(function () {
         computingTime = data.computingTime;
 
         totalStatistics.push({
+            run: graphCounter,
             fittestSoltution: bestQuality,
             computingTime: computingTime,
             params: {
@@ -124,6 +125,7 @@ $(document).ready(function () {
         }, 200);
 
         $('#solve').prop('disabled', false);
+        $('#show-total-stats').prop('disabled', false);
 
         graphCounter++;
     }
@@ -143,6 +145,7 @@ $(document).ready(function () {
         geneticLogger.clear();
         geneticLogger.log(license);
         $('#solve').prop('disabled', true);
+        $('#show-total-stats').prop('disabled', true);
         $('.results').insertBefore('.parser');
         $('.results .nav-tabs a[href="#genetic-log"]').tab('show');
         $('.results .panel').removeClass('panel-default').addClass('panel-success');
@@ -163,6 +166,69 @@ $(document).ready(function () {
 
     $('#reset').click(function () {
         document.location.reload(true);
+    });
+
+    $('#show-total-stats').click(function () {
+        var $table = $('.stats-table');
+        var columns = totalStatistics.length + 1;
+        var rows = 8;
+        var $row, $head;
+
+        $table.html('');
+
+        // build table
+        for (var i = 0; i < rows; i++) {
+
+            if (i === 0) {
+                $head = $('<thead></thead>');
+                $row = $('<tr></tr>');
+                $head.append($row);
+            } else {
+                $row = $('<tr></tr>');
+            }
+
+            for (var j = 0; j < columns; j++) {
+                if (i === 0) {
+                    $row.append($('<th></th>'));
+                } else {
+                    $row.append($('<td></td>'));
+                }
+            }
+
+            if (i === 0) {
+                $table.append($head);
+            } else {
+                $table.append($row);
+            }
+        }
+
+        // title column
+        $table.find('thead tr:nth-child(1) th').first().html('run');
+        $table.find('tbody tr:nth-child(1) td').first().html('generations');
+        $table.find('tbody tr:nth-child(2) td').first().html('population');
+        $table.find('tbody tr:nth-child(3) td').first().html('mutation');
+        $table.find('tbody tr:nth-child(4) td').first().html('crossover');
+        $table.find('tbody tr:nth-child(5) td').first().html('offsprings');
+        $table.find('tbody tr:nth-child(6) td').first().html('fittest');
+        $table.find('tbody tr:nth-child(7) td').first().html('computing time');
+
+        // result rows starting
+        $table.find('tbody tr:nth-child(6)').addClass('result');
+
+        totalStatistics.forEach(function (stat, index) {
+            var cell = index + 2;
+
+            $table.find('thead tr:nth-child(1) th:nth-child('+cell+')').html(stat.run);
+            $table.find('tbody tr:nth-child(1) td:nth-child('+cell+')').html(stat.params.generations);
+            $table.find('tbody tr:nth-child(2) td:nth-child('+cell+')').html(stat.params.populationSize);
+            $table.find('tbody tr:nth-child(3) td:nth-child('+cell+')').html(stat.params.mutateProbability);
+            $table.find('tbody tr:nth-child(4) td:nth-child('+cell+')').html(stat.params.crossoverProbability);
+            $table.find('tbody tr:nth-child(5) td:nth-child('+cell+')').html(stat.params.offspringsProportion);
+            $table.find('tbody tr:nth-child(6) td:nth-child('+cell+')').html(stat.fittestSoltution);
+            $table.find('tbody tr:nth-child(7) td:nth-child('+cell+')').html(stat.computingTime);
+        });
+
+        $('.stats').fadeIn();
     });
 
 });

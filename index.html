@@ -66,6 +66,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                             <i class="fa fa-play-circle"></i> Solve
                         </button>
 
+                        <button type="button" class="btn btn-info navbar-btn" id="show-total-stats" disabled>
+                            <i class="fa fa-table"></i> Stats
+                        </button>
+
                         <button type="button" class="btn btn-default navbar-btn" id="reset">
                             <i class="fa fa-trash-o"></i> Reset
                         </button>
@@ -76,6 +80,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         </nav>
 
         <div class="container">
+
+            <section class="stats" style="display: none;">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <table class="stats-table table table-striped table-hover">
+                        </table>
+                    </div>
+                </div>
+            </section>
 
             <section class="about">
                 <div class="panel panel-default">
