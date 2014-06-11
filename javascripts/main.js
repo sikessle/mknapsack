@@ -139,6 +139,15 @@ $(document).ready(function () {
         parserLogger.log(license);
         problems = parser.parse(input);
         $('#solve').prop('disabled', false);
+
+        // build problem selector
+        var $option;
+        var $target = $('#problemIndex');
+        $target.html('');
+        problems.forEach(function (problem, i) {
+            $option = $('<option value="' + i + '">problem ' + i + ' (' + problem.profits.length + ' items)</option>');
+            $target.append($option);
+        });
     });
 
     $('#solve').click(function () {
